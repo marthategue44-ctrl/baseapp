@@ -3,7 +3,15 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  firebase: {
+    apiKey: "", // Ingresa tu apiKey de Firebase para conectar tu proyecto en vivo
+    authDomain: "innopsi-app.firebaseapp.com",
+    projectId: "innopsi-app",
+    storageBucket: "innopsi-app.appspot.com",
+    messagingSenderId: "123456789",
+    appId: "1:123456789:web:abcdef"
+  }
 };
 
 /*

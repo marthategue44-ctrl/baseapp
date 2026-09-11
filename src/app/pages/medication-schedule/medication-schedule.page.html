@@ -1,0 +1,66 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="innopsi-top-banner">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" text="" color="dark"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="innopsi-serif-title">InnoPsi</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="innopsi-screen-bg" [fullscreen]="true">
+  
+  <div class="schedule-card">
+    
+    <h2 class="page-title">Horario de Medicamentos</h2>
+
+    <div class="med-table">
+      <!-- Encabezado de Columnas idéntico al screenshot -->
+      <div class="table-header">
+        <div class="col-med">Medicamento</div>
+        <div class="col-dose">Dosis</div>
+        <div class="col-time">Hora</div>
+        <div class="col-status">Estado</div>
+      </div>
+
+      <!-- Filas de Medicamentos -->
+      <div 
+        class="table-row" 
+        *ngFor="let med of medications"
+        [class.is-taken]="med.taken">
+        
+        <div class="col-med med-name">{{ med.name }}</div>
+        <div class="col-dose">{{ med.dose }}</div>
+        
+        <div class="col-time">
+          <span class="time-box">{{ med.time }}</span>
+        </div>
+
+        <div class="col-status">
+          <label class="status-checkbox-label">
+            <input 
+              type="checkbox" 
+              [checked]="med.taken" 
+              (change)="onToggleTaken(med, $event)">
+            <span>Tomado</span>
+          </label>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Mascota: Gatito kawaii en laptop idéntico al screenshot -->
+    <div class="mascot-section">
+      <img 
+        src="assets/img/mascot_cat.png" 
+        alt="Gatito trabajando con café" 
+        class="cat-image">
+    </div>
+
+    <div class="sync-status">
+      <ion-icon name="cloud-done-outline"></ion-icon>
+      Sincronizado con el registro de tu especialista
+    </div>
+
+  </div>
+
+</ion-content>

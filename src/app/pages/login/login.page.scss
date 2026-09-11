@@ -1,0 +1,182 @@
+.login-container {
+  max-width: 420px;
+  margin: 40px auto 20px auto;
+  padding: 10px;
+}
+
+.brand-header {
+  text-align: center;
+  margin-bottom: 24px;
+
+  .logo-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 2.8rem;
+    font-style: italic;
+    font-weight: 700;
+    color: #3b1825;
+    margin: 0;
+    text-shadow: 0 2px 8px rgba(220, 100, 140, 0.25);
+  }
+
+  .logo-subtitle {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #6d3a4b;
+    margin-top: 4px;
+  }
+}
+
+.mode-segment {
+  --background: rgba(255, 235, 243, 0.9);
+  border-radius: 20px;
+  padding: 4px;
+  margin-bottom: 20px;
+
+  ion-segment-button {
+    --color: #643141;
+    --color-checked: #ffffff;
+    --indicator-color: #e57e9e;
+    --border-radius: 16px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    min-height: 38px;
+  }
+}
+
+.role-selector {
+  margin-bottom: 16px;
+
+  .role-label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #552737;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .role-buttons {
+    display: flex;
+    gap: 10px;
+
+    .role-btn {
+      flex: 1;
+      padding: 10px 8px;
+      border-radius: 16px;
+      border: 1.5px solid #d48ba3;
+      background: #ffffff99;
+      color: #522736;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+
+      ion-icon {
+        font-size: 1.4rem;
+      }
+
+      &.active {
+        background: #f48fb1;
+        color: #2b111a;
+        border-color: #3b1d27;
+        box-shadow: 0 3px 8px rgba(180, 80, 110, 0.3);
+      }
+    }
+  }
+}
+
+.form-group {
+  margin-bottom: 14px;
+
+  ion-item {
+    --background: rgba(255, 255, 255, 0.85);
+    --border-radius: 16px;
+    --border-color: #e8a5bc;
+    --highlight-color-focused: #d8698c;
+    border: 1px solid #ecc2d2;
+    border-radius: 16px;
+    box-shadow: 0 2px 6px rgba(220, 130, 160, 0.08);
+
+    ion-label {
+      color: #6a3a4b !important;
+      font-size: 0.9rem;
+    }
+
+    ion-input {
+      --color: #2b141d;
+      font-weight: 500;
+    }
+  }
+}
+
+.error-text {
+  color: #c2185b;
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 10px 0;
+  font-weight: 600;
+}
+
+.demo-box {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px dashed #dca5b8;
+  text-align: center;
+
+  .demo-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #6e394c;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .demo-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .demo-btn {
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 1px solid #4a2835;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: #fbe5ee;
+      color: #3a1523;
+      transition: background 0.15s ease;
+
+      &:hover {
+        background: #f7cbdc;
+      }
+    }
+  }
+}
+
+.firebase-badge {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 0.78rem;
+  color: #794356;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #4caf50;
+  }
+
+  .status-dot.local {
+    background-color: #f06292;
+  }
+}

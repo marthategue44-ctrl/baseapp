@@ -1,27 +1,93 @@
-#container {
+.innopsi-toolbar {
+  --background: rgba(254, 230, 240, 0.9);
+  --color: #351722;
+  border-bottom: 1.5px solid #4a2835;
+  backdrop-filter: blur(8px);
+
+  .innopsi-header-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 0.5px;
+  }
+}
+
+.home-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: calc(100vh - 70px);
+  padding: 20px 16px;
+  position: relative;
+  z-index: 2;
+}
+
+.patient-doctor-badge {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(235, 145, 175, 0.5);
+  border-radius: 18px;
+  padding: 10px 16px;
+  max-width: 320px;
+  margin: 0 auto 20px auto;
   text-align: center;
+  box-shadow: 0 4px 12px rgba(200, 100, 130, 0.1);
 
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  .user-greeting {
+    font-size: 0.95rem;
+    color: #441c2b;
+    margin-bottom: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    .heart-icon {
+      color: #e91e63;
+      font-size: 1.05rem;
+    }
+  }
+
+  .assigned-doc {
+    font-size: 0.82rem;
+    color: #723b4e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+.menu-buttons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto 0;
+  gap: 16px;
+  padding: 10px 0;
+
+  .chat-pill-btn {
+    background-color: #f7a4bc;
+    background-image: linear-gradient(180deg, #fbb8cb 0%, #ee92ad 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    .btn-icon {
+      font-size: 1.15rem;
+    }
+  }
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
-}
-
-#container a {
-  text-decoration: none;
+.footer-info {
+  text-align: center;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-style: italic;
+  font-size: 0.88rem;
+  color: #6a3548;
+  margin-top: 20px;
+  opacity: 0.85;
 }

@@ -1,0 +1,132 @@
+.mood-container {
+  max-width: 440px;
+  margin: 10px auto 20px auto;
+  padding: 10px;
+  position: relative;
+  z-index: 2;
+}
+
+.sub-header-banner {
+  background: #f8c9d9;
+  border: 1.5px solid #3c242c;
+  border-radius: 8px;
+  padding: 8px 16px;
+  text-align: center;
+  margin-bottom: 20px;
+
+  h2 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 1.45rem;
+    color: #2e1520;
+    margin: 0;
+  }
+}
+
+.mascot-box {
+  text-align: center;
+  margin: 10px 0 25px 0;
+
+  .bunny-image {
+    max-width: 170px;
+    height: auto;
+    border-radius: 14px;
+    margin: 0 auto;
+    display: block;
+  }
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 220px;
+  margin: 0 auto 24px auto;
+
+  .option-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 1.15rem;
+    color: #2c1621;
+    transition: transform 0.15s ease;
+
+    &:hover {
+      transform: translateX(4px);
+    }
+
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: #d86288;
+      border: 1.5px solid #3c242c;
+    }
+
+    span {
+      user-select: none;
+    }
+  }
+}
+
+.note-box {
+  margin-top: 10px;
+  margin-bottom: 16px;
+
+  ion-textarea {
+    --background: rgba(255, 255, 255, 0.85);
+    --border-radius: 12px;
+    border: 1px solid #e5a0b6;
+    border-radius: 12px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    color: #3b1825;
+  }
+}
+
+.action-area {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.history-card {
+  margin-top: 25px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 16px;
+  border: 1px solid #f1b3c7;
+
+  h4 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: #401b2a;
+    margin: 0 0 10px 0;
+  }
+
+  .log-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px dashed #e8b3c4;
+    font-size: 0.85rem;
+
+    .log-mood {
+      font-weight: 700;
+      color: #9c27b0;
+
+      &.Estresado { color: #d32f2f; }
+      &.Feliz { color: #388e3c; }
+      &.Triste { color: #1976d2; }
+      &.Calmado { color: #00796b; }
+    }
+
+    .log-date {
+      color: #723e51;
+      font-size: 0.78rem;
+    }
+  }
+}

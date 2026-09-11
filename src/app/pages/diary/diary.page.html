@@ -1,0 +1,69 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="innopsi-top-banner">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" text="" color="dark"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="innopsi-serif-title">InnoPsi</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="innopsi-screen-bg" [fullscreen]="true">
+  
+  <div class="diary-container">
+    
+    <!-- Encabezado idéntico al screenshot: Title / Escribe algo abajo -->
+    <div class="diary-header">
+      <h2 class="diary-main-title">Diario de seguimiento</h2>
+      <p class="diary-sub-prompt">Escribe algo abajo</p>
+    </div>
+
+    <!-- Campos de Entrada -->
+    <div class="input-group">
+      <input 
+        type="text" 
+        class="diary-title-input" 
+        [(ngModel)]="entryTitle" 
+        placeholder="Título de tu vivencia...">
+
+      <textarea 
+        class="diary-content-textarea" 
+        [(ngModel)]="entryContent" 
+        rows="4" 
+        placeholder="Describe cómo te sientes en este momento, situaciones difíciles o pensamientos que desees registrar para tu consulta...">
+      </textarea>
+    </div>
+
+    <!-- Mascota: Bebé estrella sonriente idéntica al screenshot -->
+    <div class="mascot-area">
+      <img 
+        src="assets/img/mascot_star.png" 
+        alt="Estrella reconfortante" 
+        class="star-image">
+    </div>
+
+    <!-- Botón Enviar idéntico al screenshot -->
+    <div class="action-area">
+      <button 
+        type="button" 
+        class="innopsi-pill-button enviar-btn" 
+        [disabled]="!entryContent.trim()" 
+        (click)="submitDiaryEntry()">
+        Enviar
+      </button>
+    </div>
+
+    <!-- Entradas anteriores compartidas con el especialista -->
+    <div class="previous-entries-section" *ngIf="entries.length > 0">
+      <h3>Tus notas recientes</h3>
+      <div class="entry-card" *ngFor="let entry of entries">
+        <div class="entry-header">
+          <span class="entry-title">{{ entry.title }}</span>
+          <span class="entry-date">{{ entry.formattedDate }}</span>
+        </div>
+        <p class="entry-body">{{ entry.content }}</p>
+      </div>
+    </div>
+
+  </div>
+
+</ion-content>

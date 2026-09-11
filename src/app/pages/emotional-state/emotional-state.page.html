@@ -1,0 +1,96 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="innopsi-top-banner">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" text="" color="dark"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="innopsi-serif-title">InnoPsi</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="innopsi-screen-bg" [fullscreen]="true">
+  
+  <div class="mood-container">
+    
+    <!-- Banner de título: Estado de ánimo idéntico al screenshot -->
+    <div class="sub-header-banner">
+      <h2>Estado de ánimo</h2>
+    </div>
+
+    <!-- Mascota: Conejito tímido/encogido idéntico al screenshot -->
+    <div class="mascot-box">
+      <img 
+        src="assets/img/mascot_bunny.png" 
+        alt="Conejito expresando emociones" 
+        class="bunny-image">
+    </div>
+
+    <!-- Opciones de Checkbox idénticas al screenshot -->
+    <div class="options-list">
+      
+      <label class="option-item">
+        <input 
+          type="checkbox" 
+          [checked]="selectedMood === 'Estresado'" 
+          (change)="selectMood('Estresado')">
+        <span>Estresado</span>
+      </label>
+
+      <label class="option-item">
+        <input 
+          type="checkbox" 
+          [checked]="selectedMood === 'Feliz'" 
+          (change)="selectMood('Feliz')">
+        <span>Feliz</span>
+      </label>
+
+      <label class="option-item">
+        <input 
+          type="checkbox" 
+          [checked]="selectedMood === 'Triste'" 
+          (change)="selectMood('Triste')">
+        <span>Triste</span>
+      </label>
+
+      <label class="option-item">
+        <input 
+          type="checkbox" 
+          [checked]="selectedMood === 'Calmado'" 
+          (change)="selectMood('Calmado')">
+        <span>Calmado</span>
+      </label>
+
+    </div>
+
+    <!-- Nota adicional para el especialista -->
+    <div class="note-box" *ngIf="selectedMood">
+      <ion-textarea 
+        [(ngModel)]="moodNote" 
+        placeholder="Nota opcional para tu especialista sobre cómo te sientes..." 
+        rows="2"
+        auto-grow="true">
+      </ion-textarea>
+    </div>
+
+    <!-- Botón para registrar -->
+    <div class="action-area">
+      <button 
+        type="button" 
+        class="innopsi-pill-button" 
+        [disabled]="!selectedMood"
+        (click)="saveMoodRecord()">
+        Registrar Emoción
+      </button>
+    </div>
+
+    <!-- Historial reciente del paciente -->
+    <div class="history-card" *ngIf="recentLogs.length > 0">
+      <h4>Últimos registros compartidos</h4>
+      <div class="log-item" *ngFor="let log of recentLogs | slice:0:3">
+        <span class="log-mood" [ngClass]="log.mood">{{ log.mood }}</span>
+        <span class="log-date">{{ log.formattedDate }}</span>
+      </div>
+    </div>
+
+  </div>
+
+</ion-content>

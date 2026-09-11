@@ -1,0 +1,147 @@
+.diary-container {
+  max-width: 440px;
+  margin: 10px auto 25px auto;
+  padding: 12px;
+  position: relative;
+  z-index: 2;
+}
+
+.diary-header {
+  text-align: center;
+  margin-bottom: 20px;
+
+  .diary-main-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: #2e1520;
+    margin: 4px 0;
+  }
+
+  .diary-sub-prompt {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    color: #4b2232;
+    margin: 8px 0 14px 0;
+  }
+}
+
+.input-group {
+  margin-bottom: 16px;
+
+  .diary-title-input {
+    width: 90%;
+    max-width: 320px;
+    margin: 0 auto 14px auto;
+    display: block;
+    background: #ffffff;
+    border: 1px solid #d99cb1;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    color: #2b121c;
+    box-shadow: 0 2px 8px rgba(220, 130, 160, 0.12);
+    outline: none;
+
+    &:focus {
+      border-color: #ba486e;
+    }
+  }
+
+  .diary-content-textarea {
+    width: 90%;
+    max-width: 320px;
+    margin: 0 auto;
+    display: block;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #d99cb1;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    color: #2b121c;
+    box-shadow: 0 2px 8px rgba(220, 130, 160, 0.12);
+    resize: none;
+    outline: none;
+
+    &:focus {
+      border-color: #ba486e;
+    }
+  }
+}
+
+.mascot-area {
+  text-align: center;
+  margin: 18px 0;
+
+  .star-image {
+    max-width: 170px;
+    height: auto;
+    border-radius: 16px;
+    margin: 0 auto;
+    display: block;
+  }
+}
+
+.action-area {
+  text-align: center;
+  margin-top: 10px;
+
+  .enviar-btn {
+    background-color: #cca4af;
+    background-image: linear-gradient(180deg, #d8b2bc 0%, #be94a0 100%);
+    border: 1.5px solid #2e1d23;
+    width: 190px;
+  }
+}
+
+.previous-entries-section {
+  margin-top: 30px;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 18px;
+  border: 1px solid #f1b3c7;
+  padding: 16px;
+
+  h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: #3b1825;
+    margin: 0 0 14px 0;
+  }
+
+  .entry-card {
+    background: #fff8fa;
+    border: 1px solid #ecc4d3;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+
+    .entry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+
+      .entry-title {
+        font-weight: 700;
+        font-size: 0.92rem;
+        color: #4a1d2e;
+      }
+
+      .entry-date {
+        font-size: 0.75rem;
+        color: #884d63;
+      }
+    }
+
+    .entry-body {
+      font-size: 0.86rem;
+      color: #361723;
+      line-height: 1.4;
+      margin: 0;
+      white-space: pre-wrap;
+    }
+  }
+}

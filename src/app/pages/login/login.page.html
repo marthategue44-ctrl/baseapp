@@ -1,0 +1,123 @@
+<ion-content class="innopsi-screen-bg" [fullscreen]="true">
+  <div class="login-container">
+    
+    <div class="brand-header">
+      <h1 class="logo-title">InnoPsi</h1>
+      <p class="logo-subtitle">Cuidado Integral de la Salud Mental</p>
+    </div>
+
+    <div class="innopsi-card">
+      <ion-segment [(ngModel)]="mode" class="mode-segment">
+        <ion-segment-button value="login">
+          <ion-label>Iniciar Sesión</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="register">
+          <ion-label>Registrarse</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+
+      <div class="role-selector" *ngIf="mode === 'register'">
+        <span class="role-label">Selecciona tu Rol:</span>
+        <div class="role-buttons">
+          <button 
+            type="button" 
+            class="role-btn" 
+            [class.active]="selectedRole === 'paciente'"
+            (click)="selectedRole = 'paciente'">
+            <ion-icon name="heart-outline"></ion-icon>
+            Paciente
+          </button>
+          <button 
+            type="button" 
+            class="role-btn" 
+            [class.active]="selectedRole === 'psicologo'"
+            (click)="selectedRole = 'psicologo'">
+            <ion-icon name="medkit-outline"></ion-icon>
+            Psicólogo / Psiquiatra
+          </button>
+        </div>
+      </div>
+
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-group" *ngIf="mode === 'register'">
+          <ion-item lines="none">
+            <ion-label position="stacked">Nombre Completo</ion-label>
+            <ion-input 
+              type="text" 
+              [(ngModel)]="displayName" 
+              name="displayName" 
+              placeholder="Ej: Ana Morales"
+              required>
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-group">
+          <ion-item lines="none">
+            <ion-label position="stacked">Correo Electrónico</ion-label>
+            <ion-input 
+              type="email" 
+              [(ngModel)]="email" 
+              name="email" 
+              placeholder="usuario@innopsi.com"
+              required>
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-group">
+          <ion-item lines="none">
+            <ion-label position="stacked">Contraseña</ion-label>
+            <ion-input 
+              type="password" 
+              [(ngModel)]="password" 
+              name="password" 
+              placeholder="••••••••"
+              required>
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <div class="form-group" *ngIf="mode === 'register' && selectedRole === 'paciente'">
+          <ion-item lines="none">
+            <ion-label position="stacked">Código del Especialista (Opcional)</ion-label>
+            <ion-input 
+              type="text" 
+              [(ngModel)]="specialistCodeInput" 
+              name="specialistCodeInput" 
+              placeholder="Ej: PSI-7749">
+            </ion-input>
+          </ion-item>
+        </div>
+
+        <p class="error-text" *ngIf="errorMessage">{{ errorMessage }}</p>
+
+        <button type="submit" class="innopsi-pill-button" [disabled]="loading">
+          <span *ngIf="!loading">
+            {{ mode === 'login' ? 'Ingresar a InnoPsi' : 'Crear Cuenta' }}
+          </span>
+          <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+        </button>
+      </form>
+
+      <!-- Botones de acceso rápido para demostración -->
+      <div class="demo-box">
+        <div class="demo-title">Acceso Rápido de Prueba</div>
+        <div class="demo-actions">
+          <button type="button" class="demo-btn" (click)="quickLoginPatient()">
+            <ion-icon name="person-outline"></ion-icon> Probar como Paciente (Ana)
+          </button>
+          <button type="button" class="demo-btn" (click)="quickLoginDoctor()">
+            <ion-icon name="medkit-outline"></ion-icon> Probar como Psicólogo (Dra. Martha)
+          </button>
+        </div>
+      </div>
+
+      <div class="firebase-badge">
+        <span class="status-dot" [class.local]="!isFirebaseLive"></span>
+        <span>{{ isFirebaseLive ? 'Conectado a Firebase Live' : 'Modo Seguro Activo (Firebase / Demo Storage)' }}</span>
+      </div>
+
+    </div>
+  </div>
+</ion-content>

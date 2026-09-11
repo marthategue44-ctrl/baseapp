@@ -1,0 +1,144 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="innopsi-top-banner">
+    <ion-title class="innopsi-serif-title">InnoPsi - Panel del Especialista</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()" title="Cerrar sesión" fill="clear" color="dark">
+        <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="innopsi-screen-bg" [fullscreen]="true">
+  
+  <div class="specialist-container">
+    
+    <!-- Tarjeta del Doctor & Código único -->
+    <div class="doctor-profile-card">
+      <div class="doc-info">
+        <h2>{{ currentDoctor?.displayName || 'Especialista' }}</h2>
+        <p>{{ currentDoctor?.email }}</p>
+      </div>
+      <div class="code-badge">
+        <span class="code-label">Tu Código Médico</span>
+        <span class="code-value">{{ currentDoctor?.specialistCode || 'PSI-7749' }}</span>
+      </div>
+    </div>
+
+    <!-- Selector de Paciente -->
+    <div class="patient-picker-card">
+      <span class="picker-label">Paciente a supervisar:</span>
+      <ion-select [(ngModel)]="selectedPatientId" (ionChange)="onPatientChange()" interface="popover">
+        <ion-select-option *ngFor="let p of patientList" [value]="p.uid">
+          {{ p.displayName }}
+        </ion-select-option>
+      </ion-select>
+    </div>
+
+    <!-- Segmentos de Control -->
+    <ion-segment [(ngModel)]="activeTab" class="dashboard-segments">
+      <ion-segment-button value="meds">
+        <ion-label>Medicamentos</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="moods">
+        <ion-label>Emociones</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="diary">
+        <ion-label>Diario</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="chat">
+        <ion-label>Chat Directo</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <!-- PESTAÑA 1: MEDICAMENTOS -->
+    <div class="section-card" *ngIf="activeTab === 'meds'">
+      <div class="section-header">
+        <h3>Seguimiento de Medicación</h3>
+      </div>
+
+      <div class="med-card-item" *ngFor="let med of patientMeds">
+        <div class="med-details">
+          <div class="name">{{ med.name }}</div>
+          <div class="meta">{{ med.dose }} • Programado: {{ med.time }}</div>
+        </div>
+        <div class="med-status-badge" [ngClass]="med.taken ? 'taken' : 'pending'">
+          <ion-icon [name]="med.taken ? 'checkmark-circle' : 'time-outline'"></ion-icon>
+          <span>{{ med.taken ? 'Tomado' : 'Pendiente' }}</span>
+        </div>
+      </div>
+
+      <div class="empty-placeholder" *ngIf="patientMeds.length === 0">
+        No hay medicamentos registrados para este paciente.
+      </div>
+
+      <!-- Prescribir / Añadir Medicamento -->
+      <div class="add-med-form">
+        <h4>Prescribir nuevo medicamento</h4>
+        <div class="form-row">
+          <input type="text" [(ngModel)]="newMedName" placeholder="Nombre (ej: Medicamento D)">
+          <input type="text" [(ngModel)]="newMedDose" placeholder="Dosis (ej: 1 Tableta)">
+        </div>
+        <div class="form-row">
+          <input type="text" [(ngModel)]="newMedTime" placeholder="Hora (ej: 10:00 PM)">
+          <button type="button" class="btn-add" (click)="addMedication()">
+            + Prescribir
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 2: ESTADOS EMOCIONALES -->
+    <div class="section-card" *ngIf="activeTab === 'moods'">
+      <div class="section-header">
+        <h3>Historial de Estados de Ánimo</h3>
+      </div>
+
+      <div class="mood-timeline-item" *ngFor="let log of patientMoods">
+        <div class="mood-row-top">
+          <span class="mood-name" [ngClass]="log.mood">{{ log.mood }}</span>
+          <span class="mood-time">{{ log.formattedDate }}</span>
+        </div>
+        <p class="mood-notes" *ngIf="log.note">"{{ log.note }}"</p>
+      </div>
+
+      <div class="empty-placeholder" *ngIf="patientMoods.length === 0">
+        El paciente aún no ha registrado estados de ánimo.
+      </div>
+    </div>
+
+    <!-- PESTAÑA 3: DIARIO DE SEGUIMIENTO -->
+    <div class="section-card" *ngIf="activeTab === 'diary'">
+      <div class="section-header">
+        <h3>Entradas del Diario Fuera de Consulta</h3>
+      </div>
+
+      <div class="diary-entry-box" *ngFor="let entry of patientDiary">
+        <div class="entry-meta">
+          <span class="title">{{ entry.title }}</span>
+          <span class="date">{{ entry.formattedDate }}</span>
+        </div>
+        <p class="body">{{ entry.content }}</p>
+      </div>
+
+      <div class="empty-placeholder" *ngIf="patientDiary.length === 0">
+        No hay entradas de diario redactadas por el paciente.
+      </div>
+    </div>
+
+    <!-- PESTAÑA 4: CHAT DIRECTO -->
+    <div class="section-card" *ngIf="activeTab === 'chat'">
+      <div class="section-header">
+        <h3>Chat con {{ selectedPatientName }}</h3>
+      </div>
+      <p style="font-size: 0.88rem; color: #5a2839; margin-bottom: 12px;">
+        Comunícate en tiempo real con tu paciente para brindarle apoyo continuo entre sesiones.
+      </p>
+      <button type="button" class="innopsi-pill-button" (click)="openChatWithPatient()">
+        Abrir Conversación Directa
+      </button>
+    </div>
+
+  </div>
+
+</ion-content>
