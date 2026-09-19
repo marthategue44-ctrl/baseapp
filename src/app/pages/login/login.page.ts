@@ -68,6 +68,18 @@ export class LoginPage implements OnInit {
     }
   }
 
+  async quickLoginAdmin() {
+    this.loading = true;
+    try {
+      const user = await this.authService.loginAsDemoAdmin();
+      this.redirectUser(user.role);
+    } catch (e: any) {
+      this.errorMessage = e.message;
+    } finally {
+      this.loading = false;
+    }
+  }
+
   async quickLoginPatient() {
     this.loading = true;
     try {
@@ -92,8 +104,10 @@ export class LoginPage implements OnInit {
     }
   }
 
-  private redirectUser(role: UserRole) {
-    if (role === 'psicologo') {
+  private redirectUser(role: string) {
+    if (role === 'admin') {
+      this.router.navigate(['/admin-dashboard']);
+    } else if (role === 'psicologo') {
       this.router.navigate(['/specialist-dashboard']);
     } else {
       this.router.navigate(['/home']);

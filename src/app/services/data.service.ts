@@ -19,6 +19,7 @@ const STORAGE_KEY_MEDS = 'innopsi_medications';
 const STORAGE_KEY_MOODS = 'innopsi_moods';
 const STORAGE_KEY_DIARY = 'innopsi_diary';
 const STORAGE_KEY_CHATS = 'innopsi_chats';
+const STORAGE_KEY_READ_TS = 'innopsi_chat_read_ts'; // { [userId_chatId]: isoTimestamp }
 
 @Injectable({
   providedIn: 'root'
@@ -310,7 +311,7 @@ export class DataService {
     patientId: string, 
     senderId: string, 
     senderName: string, 
-    senderRole: 'paciente' | 'psicologo', 
+    senderRole: 'paciente' | 'psicologo' | 'admin', 
     text: string
   ): Promise<ChatMessage> {
     const chatId = 'chat_' + patientId;
@@ -321,7 +322,7 @@ export class DataService {
       senderName,
       senderRole,
       text: text.trim(),
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      timestamp: new Date().toISOString()   // ISO completo para comparaciones de no leídos
     };
 
     const current = [...this.chatMessagesSubject.value, newMsg];
@@ -340,5 +341,37 @@ export class DataService {
     }
 
     return newMsg;
+  }
+
+  // ================= MENSAJES NO LEÍDOS =================
+
+  /**
+   * Cuántos mensajes del chat de 'patientId' fueron enviados por alguien
+   * distinto de 'readerId' después de la última vez que marcó el chat como leído.
+   */
+  getUnreadCount(patientId: string, readerId: string): number {
+    const chatId = 'chat_' + patientId;
+    const key = `${readerId}__${chatId}`;
+    const tsMap: Record<string, string> = JSON.parse(
+      localStorage.getItem(STORAGE_KEY_READ_TS) || '{}'
+    );
+    const lastRead = tsMap[key] ? new Date(tsMap[key]).getTime() : 0;
+
+    return this.chatMessagesSubject.value.filter(m =>
+      m.chatId === chatId &&
+      m.senderId !== readerId &&
+      new Date(m.timestamp).getTime() > lastRead
+    ).length;
+  }
+
+  /** Marca todos los mensajes actuales como leídos para 'readerId' */
+  markChatAsRead(patientId: string, readerId: string): void {
+    const chatId = 'chat_' + patientId;
+    const key = `${readerId}__${chatId}`;
+    const tsMap: Record<string, string> = JSON.parse(
+      localStorage.getItem(STORAGE_KEY_READ_TS) || '{}'
+    );
+    tsMap[key] = new Date().toISOString();
+    localStorage.setItem(STORAGE_KEY_READ_TS, JSON.stringify(tsMap));
   }
 }

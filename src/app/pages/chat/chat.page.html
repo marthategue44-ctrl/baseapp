@@ -7,52 +7,90 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="innopsi-screen-bg" [fullscreen]="true">
-  
-  <div class="chat-wrapper">
-    
-    <!-- Barra con la información de la persona con la que se habla -->
-    <div class="chat-partner-banner">
-      <div class="avatar-circle">
-        <ion-icon [name]="isCurrentUserDoctor ? 'person-outline' : 'medkit-outline'"></ion-icon>
-      </div>
-      <div class="partner-info">
-        <h3>{{ partnerName }}</h3>
-        <p>{{ isCurrentUserDoctor ? 'Paciente asignado' : 'Tu psicólogo/psiquiatra especialista' }}</p>
-      </div>
+<!-- La pantalla entera es un flex-column fuera de ion-content para que el input quede fijo abajo -->
+<div class="chat-screen">
+
+  <!-- Banner del interlocutor -->
+  <div class="chat-partner-banner">
+    <div class="avatar-circle">
+      <ion-icon [name]="isCurrentUserDoctor ? 'person-outline' : 'medkit-outline'"></ion-icon>
     </div>
-
-    <!-- Lista de mensajes en tiempo real -->
-    <div class="messages-list">
-      <div 
-        class="message-bubble" 
-        *ngFor="let msg of messages"
-        [ngClass]="msg.senderId === currentUserId ? 'outgoing' : 'incoming'">
-        
-        <span class="sender-name">{{ msg.senderName }}</span>
-        <p class="msg-text">{{ msg.text }}</p>
-        <span class="msg-time">{{ msg.timestamp }}</span>
-      </div>
+    <div class="partner-info">
+      <h3>{{ partnerName }}</h3>
+      <p>{{ isCurrentUserDoctor ? 'Paciente asignado' : 'Tu psicólogo/psiquiatra especialista' }}</p>
     </div>
-
-    <!-- Barra inferior para redactar y enviar -->
-    <div class="chat-input-bar">
-      <input 
-        type="text" 
-        class="input-field" 
-        [(ngModel)]="newMessageText" 
-        (keyup.enter)="sendMessage()"
-        placeholder="Escribe un mensaje de apoyo o consulta...">
-
-      <button 
-        type="button" 
-        class="send-btn" 
-        [disabled]="!newMessageText.trim()"
-        (click)="sendMessage()">
-        <ion-icon name="send-outline"></ion-icon>
-      </button>
-    </div>
-
+    <div class="status-dot"></div>
   </div>
 
-</ion-content>
+  <!-- Zona de mensajes con scroll -->
+  <div class="messages-scroll-area" #scrollArea>
+    <div class="messages-list">
+
+      <!-- Mensaje vacío de bienvenida -->
+      <div class="empty-chat-hint" *ngIf="messages.length === 0">
+        <div class="empty-icon">💬</div>
+        <p>Aún no hay mensajes.<br>¡Comienza la conversación!</p>
+      </div>
+
+      <!-- Burbujas de mensajes -->
+      <div
+        class="message-row"
+        *ngFor="let msg of messages"
+        [ngClass]="msg.senderId === currentUserId ? 'row-outgoing' : 'row-incoming'">
+
+        <!-- Avatar pequeño para mensajes entrantes -->
+        <div class="mini-avatar" *ngIf="msg.senderId !== currentUserId">
+          <ion-icon [name]="isCurrentUserDoctor ? 'person-outline' : 'medkit-outline'"></ion-icon>
+        </div>
+
+        <div class="message-bubble"
+          [ngClass]="msg.senderId === currentUserId ? 'outgoing' : 'incoming'">
+          <span class="sender-name">{{ msg.senderId === currentUserId ? 'Tú' : msg.senderName }}</span>
+          <p class="msg-text">{{ msg.text }}</p>
+          <span class="msg-time">{{ formatTime(msg.timestamp) }}</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Panel de emojis (se despliega sobre el input) -->
+  <div class="emoji-panel" [class.open]="showEmojiPanel">
+    <div class="emoji-grid">
+      <button
+        class="emoji-btn"
+        *ngFor="let emoji of emojiList"
+        (click)="insertEmoji(emoji)"
+        type="button">
+        {{ emoji }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Barra de composición fija al fondo -->
+  <div class="chat-composer">
+    <button class="emoji-toggle-btn" type="button" (click)="toggleEmojiPanel()" title="Emojis">
+      {{ showEmojiPanel ? '⌨️' : '😊' }}
+    </button>
+
+    <textarea
+      class="composer-input"
+      [(ngModel)]="newMessageText"
+      (keydown.enter)="onEnterKey($event)"
+      (focus)="closeEmojiPanel()"
+      placeholder="Escribe un mensaje…"
+      rows="1"
+      #messageInput>
+    </textarea>
+
+    <button
+      class="send-btn"
+      type="button"
+      [disabled]="!newMessageText.trim()"
+      [class.ready]="newMessageText.trim()"
+      (click)="sendMessage()">
+      <ion-icon name="send"></ion-icon>
+    </button>
+  </div>
+
+</div>

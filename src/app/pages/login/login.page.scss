@@ -180,3 +180,12 @@
     background-color: #f06292;
   }
 }
+
+// Botón demo de administrador
+.admin-demo-btn {
+  background: #f3e5f5 !important;
+  border-color: #7b1fa2 !important;
+  color: #4a1060 !important;
+
+  &:hover { background: #e8d5f0 !important; }
+}

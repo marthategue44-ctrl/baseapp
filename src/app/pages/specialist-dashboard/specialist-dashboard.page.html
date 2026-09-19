@@ -1,7 +1,10 @@
 <ion-header class="ion-no-border">
   <ion-toolbar class="innopsi-top-banner">
-    <ion-title class="innopsi-serif-title">InnoPsi - Panel del Especialista</ion-title>
+    <ion-title class="innopsi-serif-title">InnoPsi · Panel del Especialista</ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="goToEditProfile()" title="Editar perfil" fill="clear" color="dark">
+        <ion-icon name="person-circle-outline" slot="icon-only"></ion-icon>
+      </ion-button>
       <ion-button (click)="logout()" title="Cerrar sesión" fill="clear" color="dark">
         <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
       </ion-button>
@@ -10,29 +13,56 @@
 </ion-header>
 
 <ion-content class="innopsi-screen-bg" [fullscreen]="true">
-  
+
   <div class="specialist-container">
-    
-    <!-- Tarjeta del Doctor & Código único -->
+
+    <!-- Tarjeta del Doctor con avatar clicable -->
     <div class="doctor-profile-card">
+      <div class="doc-avatar" (click)="goToEditProfile()">
+        <img *ngIf="currentDoctor?.photoUrl" [src]="currentDoctor!.photoUrl" alt="Foto de perfil">
+        <ion-icon *ngIf="!currentDoctor?.photoUrl" name="person-circle-outline"></ion-icon>
+      </div>
       <div class="doc-info">
         <h2>{{ currentDoctor?.displayName || 'Especialista' }}</h2>
         <p>{{ currentDoctor?.email }}</p>
       </div>
       <div class="code-badge">
-        <span class="code-label">Tu Código Médico</span>
+        <span class="code-label">Código Médico</span>
         <span class="code-value">{{ currentDoctor?.specialistCode || 'PSI-7749' }}</span>
       </div>
     </div>
 
-    <!-- Selector de Paciente -->
+    <!-- Selector de Paciente con badge de no leídos por paciente -->
     <div class="patient-picker-card">
       <span class="picker-label">Paciente a supervisar:</span>
-      <ion-select [(ngModel)]="selectedPatientId" (ionChange)="onPatientChange()" interface="popover">
-        <ion-select-option *ngFor="let p of patientList" [value]="p.uid">
-          {{ p.displayName }}
-        </ion-select-option>
-      </ion-select>
+      <div class="picker-right">
+        <ion-select [(ngModel)]="selectedPatientId" (ionChange)="onPatientChange()" interface="popover">
+          <ion-select-option *ngFor="let p of patientList" [value]="p.uid">
+            {{ p.displayName }}
+          </ion-select-option>
+        </ion-select>
+        <!-- Badge si el paciente seleccionado tiene mensajes no leídos -->
+        <span class="unread-badge" *ngIf="selectedPatientUnread > 0">
+          {{ selectedPatientUnread > 99 ? '99+' : selectedPatientUnread }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Lista resumen de pacientes con mensajes sin leer -->
+    <div class="unread-summary" *ngIf="patientsWithUnread.length > 0">
+      <div class="unread-summary-title">
+        <ion-icon name="notifications-outline"></ion-icon>
+        <span>Mensajes sin leer</span>
+      </div>
+      <div class="unread-patient-row"
+           *ngFor="let item of patientsWithUnread"
+           (click)="selectPatientAndChat(item.uid)">
+        <div class="unread-patient-avatar">
+          <ion-icon name="person-outline"></ion-icon>
+        </div>
+        <span class="unread-patient-name">{{ item.displayName }}</span>
+        <span class="unread-count-pill">{{ item.unread }}</span>
+      </div>
     </div>
 
     <!-- Segmentos de Control -->
@@ -46,8 +76,12 @@
       <ion-segment-button value="diary">
         <ion-label>Diario</ion-label>
       </ion-segment-button>
-      <ion-segment-button value="chat">
-        <ion-label>Chat Directo</ion-label>
+      <!-- Tab de chat con badge -->
+      <ion-segment-button value="chat" class="chat-tab-btn">
+        <ion-label>Chat</ion-label>
+        <span class="tab-badge" *ngIf="selectedPatientUnread > 0">
+          {{ selectedPatientUnread > 9 ? '9+' : selectedPatientUnread }}
+        </span>
       </ion-segment-button>
     </ion-segment>
 
@@ -72,7 +106,6 @@
         No hay medicamentos registrados para este paciente.
       </div>
 
-      <!-- Prescribir / Añadir Medicamento -->
       <div class="add-med-form">
         <h4>Prescribir nuevo medicamento</h4>
         <div class="form-row">
@@ -107,7 +140,7 @@
       </div>
     </div>
 
-    <!-- PESTAÑA 3: DIARIO DE SEGUIMIENTO -->
+    <!-- PESTAÑA 3: DIARIO -->
     <div class="section-card" *ngIf="activeTab === 'diary'">
       <div class="section-header">
         <h3>Entradas del Diario Fuera de Consulta</h3>
@@ -127,14 +160,18 @@
     </div>
 
     <!-- PESTAÑA 4: CHAT DIRECTO -->
-    <div class="section-card" *ngIf="activeTab === 'chat'">
+    <div class="section-card chat-section" *ngIf="activeTab === 'chat'">
       <div class="section-header">
         <h3>Chat con {{ selectedPatientName }}</h3>
+        <span class="unread-inline-badge" *ngIf="selectedPatientUnread > 0">
+          {{ selectedPatientUnread }} sin leer
+        </span>
       </div>
-      <p style="font-size: 0.88rem; color: #5a2839; margin-bottom: 12px;">
+      <p class="chat-hint-text">
         Comunícate en tiempo real con tu paciente para brindarle apoyo continuo entre sesiones.
       </p>
       <button type="button" class="innopsi-pill-button" (click)="openChatWithPatient()">
+        <ion-icon name="chatbubble-ellipses-outline"></ion-icon>
         Abrir Conversación Directa
       </button>
     </div>

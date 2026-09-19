@@ -1,0 +1,132 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="innopsi-top-banner">
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="backRoute" text="" color="dark"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="innopsi-serif-title">Editar Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="innopsi-screen-bg" [fullscreen]="true">
+  <div class="profile-edit-wrapper">
+
+    <!-- ── Foto de perfil ── -->
+    <div class="avatar-section">
+      <div class="avatar-ring" (click)="triggerFilePicker()">
+        <img *ngIf="previewUrl" [src]="previewUrl" alt="Foto de perfil" class="avatar-img">
+        <div *ngIf="!previewUrl" class="avatar-placeholder">
+          <ion-icon name="person-outline"></ion-icon>
+        </div>
+        <div class="avatar-edit-overlay">
+          <ion-icon name="camera-outline"></ion-icon>
+        </div>
+      </div>
+      <p class="avatar-hint">Toca la foto para cambiarla</p>
+      <!-- Input file oculto -->
+      <input
+        type="file"
+        accept="image/*"
+        class="hidden-file-input"
+        #fileInput
+        (change)="onFileSelected($event)">
+    </div>
+
+    <!-- ── Formulario ── -->
+    <div class="innopsi-card form-card">
+
+      <!-- Nombre de usuario -->
+      <div class="field-group">
+        <label class="field-label">
+          <ion-icon name="person-outline"></ion-icon>
+          Nombre de usuario
+        </label>
+        <input
+          type="text"
+          class="field-input"
+          [(ngModel)]="displayName"
+          placeholder="Tu nombre o alias"
+          maxlength="50">
+      </div>
+
+      <!-- Email (solo lectura) -->
+      <div class="field-group">
+        <label class="field-label">
+          <ion-icon name="mail-outline"></ion-icon>
+          Correo electrónico
+        </label>
+        <input
+          type="email"
+          class="field-input readonly"
+          [value]="currentUser?.email || ''"
+          readonly>
+        <span class="field-note">El correo no se puede cambiar desde aquí.</span>
+      </div>
+
+      <!-- Rol (solo lectura) -->
+      <div class="field-group">
+        <label class="field-label">
+          <ion-icon name="shield-checkmark-outline"></ion-icon>
+          Rol
+        </label>
+        <div class="role-pill" [ngClass]="currentUser?.role">
+          <ion-icon [name]="currentUser?.role === 'psicologo' ? 'medkit-outline' : 'heart-outline'"></ion-icon>
+          {{ currentUser?.role === 'psicologo' ? 'Especialista / Psicólogo' : 'Paciente' }}
+        </div>
+      </div>
+
+      <!-- Código médico (solo psicólogos) -->
+      <div class="field-group" *ngIf="currentUser?.role === 'psicologo'">
+        <label class="field-label">
+          <ion-icon name="id-card-outline"></ion-icon>
+          Código médico
+        </label>
+        <input
+          type="text"
+          class="field-input readonly"
+          [value]="currentUser?.specialistCode || ''"
+          readonly>
+        <span class="field-note">Comparte este código con tus pacientes para vincularlos.</span>
+      </div>
+
+      <!-- Doctor asignado (solo pacientes) -->
+      <div class="field-group" *ngIf="currentUser?.role === 'paciente'">
+        <label class="field-label">
+          <ion-icon name="medkit-outline"></ion-icon>
+          Especialista asignado
+        </label>
+        <input
+          type="text"
+          class="field-input readonly"
+          [value]="currentUser?.assignedDoctorName || 'Sin asignar'"
+          readonly>
+      </div>
+
+    </div>
+
+    <!-- ── Botones de acción ── -->
+    <div class="action-area">
+      <button
+        type="button"
+        class="innopsi-pill-button save-btn"
+        [disabled]="isSaving"
+        (click)="saveChanges()">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>
+        {{ isSaving ? 'Guardando…' : 'Guardar cambios' }}
+      </button>
+
+      <button
+        type="button"
+        class="innopsi-pill-button cancel-btn"
+        (click)="goBack()">
+        Cancelar
+      </button>
+    </div>
+
+    <!-- ── Feedback de guardado ── -->
+    <div class="save-feedback" *ngIf="savedOk">
+      <ion-icon name="checkmark-circle"></ion-icon>
+      ¡Perfil actualizado con éxito!
+    </div>
+
+  </div>
+</ion-content>

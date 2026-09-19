@@ -1,0 +1,376 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="innopsi-top-banner">
+    <ion-title class="innopsi-serif-title">InnoPsi · Administración</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()" title="Cerrar sesión" fill="clear" color="dark">
+        <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="innopsi-screen-bg" [fullscreen]="true">
+  <div class="admin-container">
+
+    <!-- ── Tarjeta del admin ── -->
+    <div class="admin-profile-card">
+      <div class="admin-avatar">
+        <ion-icon name="shield-checkmark-outline"></ion-icon>
+      </div>
+      <div class="admin-info">
+        <h2>{{ currentAdmin?.displayName }}</h2>
+        <p>Panel de Administración del Sistema</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat-chip">
+          <ion-icon name="people-outline"></ion-icon>
+          <span>{{ allPatients.length }} pacientes</span>
+        </div>
+        <div class="stat-chip">
+          <ion-icon name="medkit-outline"></ion-icon>
+          <span>{{ allDoctors.length }} especialistas</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Tabs principales ── -->
+    <ion-segment [(ngModel)]="activeTab" class="admin-segments">
+      <ion-segment-button value="assign">
+        <ion-label>Asignaciones</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="doctors">
+        <ion-label>Especialistas</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="patients">
+        <ion-label>Pacientes</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+
+    <!-- ══════════════════════════════════════════
+         MODAL CRUD  (crear / editar)
+         Aparece sobre cualquier tab activo
+    ══════════════════════════════════════════ -->
+    <div class="crud-modal-backdrop" *ngIf="showModal" (click)="cancelModal()"></div>
+
+    <div class="crud-modal" *ngIf="showModal">
+      <div class="crud-modal-header">
+        <h3>
+          <ion-icon [name]="modalMode === 'create' ? 'person-add-outline' : 'create-outline'"></ion-icon>
+          {{ modalMode === 'create'
+              ? (formRole === 'psicologo' ? 'Nuevo Especialista' : 'Nuevo Paciente')
+              : 'Editar Usuario' }}
+        </h3>
+        <button class="modal-close-btn" (click)="cancelModal()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <!-- Error del formulario -->
+      <div class="form-error-banner" *ngIf="formError">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        {{ formError }}
+      </div>
+
+      <div class="crud-form">
+
+        <!-- Selector de rol solo al crear -->
+        <div class="form-field" *ngIf="modalMode === 'create'">
+          <label class="field-label">
+            <ion-icon name="shield-half-outline"></ion-icon> Tipo de usuario
+          </label>
+          <div class="role-toggle">
+            <button type="button"
+              class="role-toggle-btn"
+              [class.active]="formRole === 'paciente'"
+              (click)="formRole = 'paciente'">
+              <ion-icon name="heart-outline"></ion-icon> Paciente
+            </button>
+            <button type="button"
+              class="role-toggle-btn"
+              [class.active]="formRole === 'psicologo'"
+              (click)="formRole = 'psicologo'">
+              <ion-icon name="medkit-outline"></ion-icon> Especialista
+            </button>
+          </div>
+        </div>
+
+        <!-- Nombre -->
+        <div class="form-field">
+          <label class="field-label">
+            <ion-icon name="person-outline"></ion-icon> Nombre completo
+          </label>
+          <input class="form-input" type="text" [(ngModel)]="formName"
+            placeholder="Ej: Dr. Andrés López" maxlength="60">
+        </div>
+
+        <!-- Email -->
+        <div class="form-field">
+          <label class="field-label">
+            <ion-icon name="mail-outline"></ion-icon> Correo electrónico
+          </label>
+          <input class="form-input" type="email" [(ngModel)]="formEmail"
+            placeholder="usuario@innopsi.com">
+        </div>
+
+        <!-- Código especialista (solo psicólogos) -->
+        <div class="form-field"
+             *ngIf="formRole === 'psicologo'">
+          <label class="field-label">
+            <ion-icon name="id-card-outline"></ion-icon> Código médico
+            <span class="label-hint">(se genera auto si se deja vacío)</span>
+          </label>
+          <input class="form-input" type="text" [(ngModel)]="formSpecialistCode"
+            placeholder="PSI-XXXX" maxlength="10">
+        </div>
+
+        <!-- Especialistas a asignar (solo pacientes, solo al crear) -->
+        <div class="form-field"
+             *ngIf="formRole === 'paciente' && modalMode === 'create'">
+          <label class="field-label">
+            <ion-icon name="medkit-outline"></ion-icon> Asignar especialista(s)
+            <span class="label-hint">(opcional)</span>
+          </label>
+          <div class="doctor-checkbox-list">
+            <label class="doc-check-row"
+                   *ngFor="let doc of allDoctors">
+              <input type="checkbox"
+                     [checked]="formAssignedDoctorIds.includes(doc.uid)"
+                     (change)="toggleDoctorCheck(doc.uid, $event)">
+              <span class="doc-check-name">{{ doc.displayName }}</span>
+              <span class="doc-check-code">{{ doc.specialistCode }}</span>
+            </label>
+            <p class="no-doctors-hint" *ngIf="allDoctors.length === 0">
+              No hay especialistas disponibles aún
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Acciones del modal -->
+      <div class="crud-modal-actions">
+        <button class="modal-btn cancel" (click)="cancelModal()">Cancelar</button>
+        <button class="modal-btn save"   (click)="saveModal()"
+                [disabled]="!formName.trim() || !formEmail.trim()">
+          <ion-icon name="checkmark-outline"></ion-icon>
+          {{ modalMode === 'create' ? 'Crear' : 'Guardar' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         MODAL DE CONFIRMACIÓN (eliminar)
+    ══════════════════════════════════════ -->
+    <div class="crud-modal-backdrop danger-backdrop" *ngIf="showDeleteConfirm" (click)="cancelDelete()"></div>
+    <div class="crud-modal delete-modal" *ngIf="showDeleteConfirm">
+      <div class="crud-modal-header danger">
+        <ion-icon name="warning-outline"></ion-icon>
+        <h3>Eliminar usuario</h3>
+      </div>
+      <p class="delete-warning-text">
+        ¿Seguro que deseas eliminar a
+        <strong>{{ deleteTargetName }}</strong>?
+        Esta acción no se puede deshacer.
+      </p>
+      <div class="crud-modal-actions">
+        <button class="modal-btn cancel" (click)="cancelDelete()">Cancelar</button>
+        <button class="modal-btn delete" (click)="confirmDelete()">
+          <ion-icon name="trash-outline"></ion-icon> Eliminar
+        </button>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         TAB 1: ASIGNACIONES
+    ══════════════════════════════════════ -->
+    <div *ngIf="activeTab === 'assign'">
+      <div class="section-card">
+        <div class="section-header">
+          <ion-icon name="medkit-outline"></ion-icon>
+          <h3>Selecciona el especialista</h3>
+        </div>
+        <div class="doctor-chip-list">
+          <div class="doctor-chip"
+               *ngFor="let doc of allDoctors"
+               [class.selected]="selectedDoctorId === doc.uid"
+               (click)="selectDoctor(doc.uid)">
+            <div class="chip-avatar">
+              <img *ngIf="doc.photoUrl" [src]="doc.photoUrl" alt="">
+              <ion-icon *ngIf="!doc.photoUrl" name="person-outline"></ion-icon>
+            </div>
+            <div class="chip-info">
+              <span class="chip-name">{{ doc.displayName }}</span>
+              <span class="chip-code">{{ doc.specialistCode }}</span>
+            </div>
+            <div class="chip-count">
+              <span>{{ getPatientsForDoctor(doc.uid).length }}</span>
+              <ion-icon name="people-outline"></ion-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-card assignment-panel" *ngIf="selectedDoctorId">
+        <div class="section-header">
+          <ion-icon name="link-outline"></ion-icon>
+          <h3>Pacientes de {{ selectedDoctorName }}</h3>
+        </div>
+        <div class="sub-label" *ngIf="assignedPatients.length > 0">
+          <ion-icon name="checkmark-circle-outline"></ion-icon> Asignados
+        </div>
+        <div class="patient-assign-row assigned" *ngFor="let p of assignedPatients">
+          <div class="pat-avatar">
+            <img *ngIf="p.photoUrl" [src]="p.photoUrl" alt="">
+            <ion-icon *ngIf="!p.photoUrl" name="person-outline"></ion-icon>
+          </div>
+          <div class="pat-info">
+            <span class="pat-name">{{ p.displayName }}</span>
+            <span class="pat-email">{{ p.email }}</span>
+          </div>
+          <button class="action-btn remove-btn" (click)="removeAssignment(p.uid)">
+            <ion-icon name="close-circle-outline"></ion-icon>
+          </button>
+        </div>
+        <div class="empty-assign" *ngIf="assignedPatients.length === 0">
+          <ion-icon name="person-add-outline"></ion-icon>
+          <p>Sin pacientes asignados</p>
+        </div>
+        <div class="assign-divider" *ngIf="unassignedPatients.length > 0">
+          <span>Disponibles para asignar</span>
+        </div>
+        <div class="patient-assign-row unassigned" *ngFor="let p of unassignedPatients">
+          <div class="pat-avatar">
+            <img *ngIf="p.photoUrl" [src]="p.photoUrl" alt="">
+            <ion-icon *ngIf="!p.photoUrl" name="person-outline"></ion-icon>
+          </div>
+          <div class="pat-info">
+            <span class="pat-name">{{ p.displayName }}</span>
+            <span class="pat-email">{{ p.email }}</span>
+          </div>
+          <button class="action-btn add-btn" (click)="addAssignment(p.uid)">
+            <ion-icon name="add-circle-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="!selectedDoctorId">
+        <div class="empty-icon">🏥</div>
+        <p>Selecciona un especialista para gestionar sus pacientes</p>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         TAB 2: ESPECIALISTAS (CRUD)
+    ══════════════════════════════════════ -->
+    <div *ngIf="activeTab === 'doctors'">
+
+      <!-- Botón crear -->
+      <button class="fab-create-btn" (click)="openCreate('psicologo')">
+        <ion-icon name="add-outline"></ion-icon>
+        Nuevo especialista
+      </button>
+
+      <div class="section-card user-crud-card" *ngFor="let doc of allDoctors">
+        <div class="user-card-row">
+          <div class="user-card-avatar doctor-av">
+            <img *ngIf="doc.photoUrl" [src]="doc.photoUrl" alt="">
+            <ion-icon *ngIf="!doc.photoUrl" name="medkit-outline"></ion-icon>
+          </div>
+          <div class="user-card-info">
+            <h4>{{ doc.displayName }}</h4>
+            <p>{{ doc.email }}</p>
+            <span class="code-tag">{{ doc.specialistCode }}</span>
+          </div>
+          <div class="user-card-meta">
+            <div class="patient-count-badge">
+              <span>{{ getPatientsForDoctor(doc.uid).length }}</span>
+              <small>pacientes</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pacientes asignados -->
+        <div class="inline-patients" *ngIf="getPatientsForDoctor(doc.uid).length > 0">
+          <div class="inline-patient-pill" *ngFor="let p of getPatientsForDoctor(doc.uid)">
+            <ion-icon name="person-outline"></ion-icon> {{ p.displayName }}
+          </div>
+        </div>
+        <div class="empty-placeholder small" *ngIf="getPatientsForDoctor(doc.uid).length === 0">
+          Sin pacientes asignados aún
+        </div>
+
+        <!-- Acciones CRUD -->
+        <div class="crud-actions">
+          <button class="crud-btn edit-btn" (click)="openEdit(doc)">
+            <ion-icon name="create-outline"></ion-icon> Editar
+          </button>
+          <button class="crud-btn delete-btn" (click)="openDelete(doc)">
+            <ion-icon name="trash-outline"></ion-icon> Eliminar
+          </button>
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="allDoctors.length === 0">
+        <div class="empty-icon">👨‍⚕️</div>
+        <p>No hay especialistas registrados</p>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         TAB 3: PACIENTES (CRUD)
+    ══════════════════════════════════════ -->
+    <div *ngIf="activeTab === 'patients'">
+
+      <!-- Botón crear -->
+      <button class="fab-create-btn patient-create" (click)="openCreate('paciente')">
+        <ion-icon name="add-outline"></ion-icon>
+        Nuevo paciente
+      </button>
+
+      <div class="section-card user-crud-card" *ngFor="let p of allPatients">
+        <div class="user-card-row">
+          <div class="user-card-avatar patient-av">
+            <img *ngIf="p.photoUrl" [src]="p.photoUrl" alt="">
+            <ion-icon *ngIf="!p.photoUrl" name="person-outline"></ion-icon>
+          </div>
+          <div class="user-card-info">
+            <h4>{{ p.displayName }}</h4>
+            <p>{{ p.email }}</p>
+          </div>
+        </div>
+
+        <!-- Especialistas asignados -->
+        <div class="assigned-doctors-section">
+          <span class="sub-label-inline">
+            <ion-icon name="medkit-outline"></ion-icon> Especialistas:
+          </span>
+          <div class="inline-patients" *ngIf="getDoctorsForPatient(p.uid).length > 0">
+            <div class="inline-patient-pill doctor-pill"
+                 *ngFor="let d of getDoctorsForPatient(p.uid)">
+              <ion-icon name="medkit-outline"></ion-icon> {{ d.displayName }}
+            </div>
+          </div>
+          <div class="empty-placeholder small" *ngIf="getDoctorsForPatient(p.uid).length === 0">
+            Sin especialista asignado
+          </div>
+        </div>
+
+        <!-- Acciones CRUD -->
+        <div class="crud-actions">
+          <button class="crud-btn edit-btn" (click)="openEdit(p)">
+            <ion-icon name="create-outline"></ion-icon> Editar
+          </button>
+          <button class="crud-btn delete-btn" (click)="openDelete(p)">
+            <ion-icon name="trash-outline"></ion-icon> Eliminar
+          </button>
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="allPatients.length === 0">
+        <div class="empty-icon">🧑‍🤝‍🧑</div>
+        <p>No hay pacientes registrados</p>
+      </div>
+    </div>
+
+  </div>
+</ion-content>

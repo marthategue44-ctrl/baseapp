@@ -1,9 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { DataService } from '../../services/data.service';
 import { UserProfile, Medication, EmotionalStateLog, DiaryEntry } from '../../models/app.models';
 import { ToastController } from '@ionic/angular';
+
+interface PatientUnreadItem {
+  uid: string;
+  displayName: string;
+  unread: number;
+}
 
 @Component({
   selector: 'app-specialist-dashboard',
@@ -11,7 +18,7 @@ import { ToastController } from '@ionic/angular';
   styleUrls: ['./specialist-dashboard.page.scss'],
   standalone: false
 })
-export class SpecialistDashboardPage implements OnInit {
+export class SpecialistDashboardPage implements OnInit, OnDestroy {
   currentDoctor: UserProfile | null = null;
   patientList: UserProfile[] = [];
   selectedPatientId: string = 'paciente_ana_01';
@@ -22,10 +29,22 @@ export class SpecialistDashboardPage implements OnInit {
   patientMoods: EmotionalStateLog[] = [];
   patientDiary: DiaryEntry[] = [];
 
-  // Formulario nuevo medicamento
+  /** Mensajes no leídos del paciente seleccionado */
+  selectedPatientUnread: number = 0;
+
+  /** Lista de pacientes que tienen al menos 1 mensaje sin leer */
+  patientsWithUnread: PatientUnreadItem[] = [];
+
   newMedName: string = '';
   newMedDose: string = '';
   newMedTime: string = '';
+
+  private chatSub!: Subscription;
+  private medSub!: Subscription;
+  private moodSub!: Subscription;
+  private diarySub!: Subscription;
+  private userSub!: Subscription;
+  private allUsersSub!: Subscription;
 
   constructor(
     private authService: AuthService,
@@ -41,17 +60,68 @@ export class SpecialistDashboardPage implements OnInit {
       return;
     }
 
-    this.patientList = this.authService.getAllPatients();
+    // Solo pacientes asignados a ESTE doctor
+    this.patientList = this.authService.getPatientsForDoctor(this.currentDoctor.uid);
     if (this.patientList.length > 0) {
       this.selectedPatientId = this.patientList[0].uid;
     }
 
     this.loadPatientData();
 
-    // Suscribirse a cambios reactivos
-    this.dataService.medications$.subscribe(() => this.loadPatientData());
-    this.dataService.moodLogs$.subscribe(() => this.loadPatientData());
-    this.dataService.diary$.subscribe(() => this.loadPatientData());
+    // ── Reaccionar a cambios del perfil del doctor (nombre, foto) ──
+    this.userSub = this.authService.currentUser$.subscribe(user => {
+      if (user && user.role === 'psicologo') {
+        this.currentDoctor = user;
+      }
+    });
+
+    // ── Reaccionar a cambios en la lista de usuarios (nombres/fotos de pacientes) ──
+    this.allUsersSub = this.authService.allUsers$.subscribe(() => {
+      // Solo mostrar pacientes asignados a ESTE doctor
+      this.patientList = this.authService.getPatientsForDoctor(this.currentDoctor!.uid);
+      if (this.patientList.length > 0 && !this.patientList.find(p => p.uid === this.selectedPatientId)) {
+        this.selectedPatientId = this.patientList[0].uid;
+      }
+      this.refreshUnreadBadges();
+    });
+
+    // ── Reaccionar a cambios de datos clínicos ──
+    this.medSub   = this.dataService.medications$.subscribe(() => this.loadPatientData());
+    this.moodSub  = this.dataService.moodLogs$.subscribe(() => this.loadPatientData());
+    this.diarySub = this.dataService.diary$.subscribe(() => this.loadPatientData());
+
+    // ── Reaccionar a mensajes nuevos → refrescar todos los badges ──
+    this.chatSub = this.dataService.chatMessages$.subscribe(() => {
+      this.refreshUnreadBadges();
+    });
+  }
+
+  ngOnDestroy() {
+    this.chatSub?.unsubscribe();
+    this.medSub?.unsubscribe();
+    this.moodSub?.unsubscribe();
+    this.diarySub?.unsubscribe();
+    this.userSub?.unsubscribe();
+    this.allUsersSub?.unsubscribe();
+  }
+
+  private refreshUnreadBadges() {
+    if (!this.currentDoctor) return;
+    const doctorId = this.currentDoctor.uid;
+
+    // Badge del paciente seleccionado actualmente
+    this.selectedPatientUnread = this.dataService.getUnreadCount(
+      this.selectedPatientId, doctorId
+    );
+
+    // Resumen de todos los pacientes con no leídos
+    this.patientsWithUnread = this.patientList
+      .map(p => ({
+        uid: p.uid,
+        displayName: p.displayName,
+        unread: this.dataService.getUnreadCount(p.uid, doctorId)
+      }))
+      .filter(item => item.unread > 0);
   }
 
   get selectedPatientName(): string {
@@ -61,18 +131,25 @@ export class SpecialistDashboardPage implements OnInit {
 
   onPatientChange() {
     this.loadPatientData();
+    this.refreshUnreadBadges();
   }
 
   loadPatientData() {
-    this.patientMeds = this.dataService.getMedications(this.selectedPatientId);
+    this.patientMeds  = this.dataService.getMedications(this.selectedPatientId);
     this.patientMoods = this.dataService.getEmotionalLogs(this.selectedPatientId);
     this.patientDiary = this.dataService.getDiaryEntries(this.selectedPatientId);
+    this.refreshUnreadBadges();
+  }
+
+  /** Selecciona un paciente desde el resumen de no leídos y abre el chat */
+  selectPatientAndChat(patientId: string) {
+    this.selectedPatientId = patientId;
+    this.activeTab = 'chat';
+    this.loadPatientData();
   }
 
   async addMedication() {
-    if (!this.newMedName.trim() || !this.newMedTime.trim()) {
-      return;
-    }
+    if (!this.newMedName.trim() || !this.newMedTime.trim()) return;
 
     await this.dataService.addMedication(
       this.selectedPatientId,
@@ -82,8 +159,8 @@ export class SpecialistDashboardPage implements OnInit {
     );
 
     const toast = await this.toastCtrl.create({
-      message: `Medicamento "${this.newMedName}" prescrito a ${this.selectedPatientName}`,
-      duration: 2000,
+      message: `💊 Medicamento "${this.newMedName}" prescrito a ${this.selectedPatientName}`,
+      duration: 2200,
       color: 'dark'
     });
     await toast.present();
@@ -95,6 +172,10 @@ export class SpecialistDashboardPage implements OnInit {
 
   openChatWithPatient() {
     this.router.navigate(['/chat', this.selectedPatientId]);
+  }
+
+  goToEditProfile() {
+    this.router.navigate(['/edit-profile']);
   }
 
   async logout() {

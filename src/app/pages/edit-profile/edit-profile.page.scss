@@ -1,0 +1,250 @@
+// ============================================================
+// edit-profile.page.scss — InnoPsi
+// ============================================================
+
+.profile-edit-wrapper {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+  position: relative;
+  z-index: 2;
+}
+
+// ── Sección de avatar ──────────────────────────────────────
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.avatar-ring {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(180, 80, 110, 0.28);
+
+  // Anillo decorativo
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f9b4c9, #ee92ad, #d070a0);
+    z-index: 0;
+  }
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  position: relative;
+  z-index: 1;
+  border: 3px solid #fff;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #fde8f0 0%, #f9c0d4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+  border: 3px solid #fff;
+
+  ion-icon {
+    font-size: 3rem;
+    color: #a0506a;
+  }
+}
+
+// Overlay de cámara al hover/focus
+.avatar-edit-overlay {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f7aac3 0%, #e8749e 100%);
+  border: 2.5px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+
+  ion-icon {
+    font-size: 1rem;
+    color: #2b0f1a;
+  }
+}
+
+.avatar-hint {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: #7b4255;
+  font-style: italic;
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+// ── Tarjeta de formulario ──────────────────────────────────
+.form-card {
+  margin-bottom: 20px;
+}
+
+.field-group {
+  margin-bottom: 18px;
+
+  &:last-child { margin-bottom: 0; }
+}
+
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #6a2a40;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+
+  ion-icon { font-size: 0.95rem; }
+}
+
+.field-input {
+  width: 100%;
+  background: #fff;
+  border: 1.5px solid #dca0b8;
+  border-radius: 14px;
+  padding: 11px 16px;
+  font-size: 0.92rem;
+  font-family: 'Quicksand', sans-serif;
+  color: #2b121c;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.18s, box-shadow 0.18s;
+
+  &:focus {
+    border-color: #cb537a;
+    box-shadow: 0 0 0 3px rgba(203, 83, 122, 0.12);
+  }
+
+  &.readonly {
+    background: #fdf0f4;
+    color: #7a4255;
+    cursor: default;
+    border-style: dashed;
+    border-color: #e0b0c2;
+
+    &:focus { box-shadow: none; border-color: #e0b0c2; }
+  }
+}
+
+.field-note {
+  display: block;
+  font-size: 0.74rem;
+  color: #9c6070;
+  margin-top: 5px;
+  font-style: italic;
+  padding-left: 4px;
+}
+
+// ── Píldora de rol ─────────────────────────────────────────
+.role-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.88rem;
+  font-weight: 700;
+
+  &.psicologo {
+    background: #ede7f6;
+    color: #6a1b9a;
+    border: 1.5px solid #ce93d8;
+
+    ion-icon { color: #7b1fa2; }
+  }
+
+  &.paciente {
+    background: #fce4ec;
+    color: #880e4f;
+    border: 1.5px solid #f48fb1;
+
+    ion-icon { color: #c2185b; }
+  }
+}
+
+// ── Botones ────────────────────────────────────────────────
+.action-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.save-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 280px;
+
+  ion-icon { font-size: 1.1rem; }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+    transform: none !important;
+  }
+}
+
+.cancel-btn {
+  background: rgba(255, 255, 255, 0.7);
+  color: #6a2a40;
+  border-color: #d0a0b4;
+  width: 100%;
+  max-width: 280px;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.9);
+  }
+}
+
+// ── Feedback de éxito ──────────────────────────────────────
+.save-feedback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 12px 20px;
+  background: rgba(232, 245, 233, 0.95);
+  border: 1.5px solid #a5d6a7;
+  border-radius: 16px;
+  color: #2e7d32;
+  font-size: 0.9rem;
+  font-weight: 700;
+  animation: fade-in 0.3s ease;
+
+  ion-icon { font-size: 1.3rem; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

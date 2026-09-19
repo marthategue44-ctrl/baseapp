@@ -1,150 +1,376 @@
-.chat-wrapper {
+// ============================================================
+// chat.page.scss — InnoPsi · Mensajes Directos
+// Layout: la pantalla completa es un flex-column fijo para
+// que el composer siempre quede pegado al fondo.
+// ============================================================
+
+// La página entera (ion-header + chat-screen) ocupa el 100% del viewport
+:host {
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-width: 540px;
-  margin: 0 auto;
-  position: relative;
-  z-index: 2;
+  background: radial-gradient(circle at 50% 30%, #fff2f6 0%, #fedce7 45%, #f9c2d5 75%, #f6a7c3 100%);
+  background-attachment: fixed;
+  font-family: 'Quicksand', sans-serif;
 }
 
+// ── Estructura principal ───────────────────────────────────
+.chat-screen {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;           // El scroll es interno en .messages-scroll-area
+  position: relative;
+  max-width: 600px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+// ── Banner del interlocutor ────────────────────────────────
 .chat-partner-banner {
-  background: rgba(255, 255, 255, 0.85);
-  border-bottom: 1px solid #f0b5c8;
-  padding: 10px 16px;
   display: flex;
   align-items: center;
   gap: 12px;
+  padding: 10px 16px;
+  background: rgba(255, 240, 248, 0.92);
+  border-bottom: 1.5px solid #e8a8c0;
   backdrop-filter: blur(8px);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 3;
 
   .avatar-circle {
-    width: 38px;
-    height: 38px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
-    background: #f48fb1;
+    background: linear-gradient(135deg, #f9b4c9 0%, #ee92ad 100%);
+    border: 1.5px solid #d0607e;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #2e121d;
-    font-size: 1.2rem;
+    color: #3a1523;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(180, 80, 110, 0.2);
   }
 
   .partner-info {
+    flex: 1;
+
     h3 {
       margin: 0;
       font-size: 0.95rem;
       font-weight: 700;
       color: #381523;
+      font-family: 'Playfair Display', Georgia, serif;
     }
 
     p {
-      margin: 0;
-      font-size: 0.78rem;
+      margin: 2px 0 0;
+      font-size: 0.75rem;
       color: #7b4255;
     }
+  }
+
+  // Indicador "en línea"
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #6ec97f;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 2px rgba(110, 201, 127, 0.35);
+    flex-shrink: 0;
+  }
+}
+
+// ── Zona de mensajes con scroll ────────────────────────────
+.messages-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 14px 12px 6px;
+
+  // Scrollbar delgada y acorde al tema
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(210, 130, 160, 0.45);
+    border-radius: 4px;
   }
 }
 
 .messages-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px 12px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+  min-height: 100%;
 }
 
+// ── Mensaje vacío ──────────────────────────────────────────
+.empty-chat-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  opacity: 0.7;
+
+  .empty-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));
+  }
+
+  p {
+    font-size: 0.9rem;
+    color: #7b4255;
+    line-height: 1.6;
+    margin: 0;
+  }
+}
+
+// ── Filas de mensaje (para alinear burbuja + avatar) ───────
+.message-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+
+  &.row-outgoing {
+    justify-content: flex-end;
+
+    .mini-avatar { display: none; }
+  }
+
+  &.row-incoming {
+    justify-content: flex-start;
+  }
+}
+
+.mini-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f9b4c9 0%, #ee92ad 100%);
+  border: 1px solid #d0607e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: #3a1523;
+  flex-shrink: 0;
+  margin-bottom: 2px;
+}
+
+// ── Burbujas ───────────────────────────────────────────────
 .message-bubble {
-  max-width: 78%;
-  padding: 10px 14px;
+  max-width: 75%;
+  padding: 9px 14px 7px;
   border-radius: 18px;
   position: relative;
-  font-size: 0.9rem;
-  line-height: 1.4;
-  box-shadow: 0 2px 8px rgba(180, 80, 110, 0.12);
+  line-height: 1.45;
+  word-break: break-word;
 
   .sender-name {
     display: block;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     font-weight: 700;
     margin-bottom: 3px;
-    color: #7b2943;
+    opacity: 0.75;
   }
 
   .msg-text {
     margin: 0;
-    color: #27121b;
-    word-break: break-word;
+    font-size: 0.9rem;
+    white-space: pre-wrap;   // Respeta saltos de línea (Shift+Enter)
   }
 
   .msg-time {
     display: block;
-    font-size: 0.68rem;
-    color: #8c576a;
+    font-size: 0.65rem;
     text-align: right;
-    margin-top: 4px;
+    margin-top: 5px;
+    opacity: 0.65;
   }
 
+  // Mensaje propio — degradado rosa cálido
   &.outgoing {
-    align-self: flex-end;
-    background: #f7a8c0;
-    background-image: linear-gradient(135deg, #f9b4c9 0%, #ee92ad 100%);
+    background: linear-gradient(135deg, #f9b8ce 0%, #ec87a9 100%);
+    border: 1px solid #c75e82;
     border-bottom-right-radius: 4px;
-    border: 1px solid #d8819d;
+    box-shadow: 0 3px 10px rgba(180, 80, 110, 0.22);
+    color: #2b0f1a;
+
+    .sender-name { color: #7a2542; }
+    .msg-time    { color: #7a2542; }
   }
 
+  // Mensaje recibido — blanco lechoso con borde suave
   &.incoming {
-    align-self: flex-start;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid #e8c4d2;
     border-bottom-left-radius: 4px;
-    border: 1px solid #ebd0da;
+    box-shadow: 0 3px 10px rgba(200, 140, 165, 0.15);
+    color: #27121b;
+
+    .sender-name { color: #a0496a; }
+    .msg-time    { color: #9c7080; }
   }
 }
 
-.chat-input-bar {
-  background: rgba(255, 240, 246, 0.95);
-  border-top: 1.5px solid #ebb0c3;
-  padding: 8px 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+// ── Panel de emojis ────────────────────────────────────────
+.emoji-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.22s ease;
+  opacity: 0;
+  background: rgba(255, 240, 248, 0.97);
+  border-top: 1.5px solid #e8a8c0;
+  flex-shrink: 0;
   backdrop-filter: blur(8px);
 
-  .input-field {
-    flex: 1;
-    background: #ffffff;
-    border: 1px solid #e09bb2;
-    border-radius: 20px;
-    padding: 10px 16px;
-    font-size: 0.9rem;
-    color: #2b121c;
-    outline: none;
+  &.open {
+    max-height: 190px;
+    opacity: 1;
+    overflow-y: auto;
 
-    &:focus {
-      border-color: #cb537a;
+    &::-webkit-scrollbar { width: 3px; }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(210, 130, 160, 0.4);
+      border-radius: 3px;
     }
   }
 
-  .send-btn {
+  .emoji-grid {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px 8px 8px;
+    gap: 2px;
+  }
+
+  .emoji-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
     width: 42px;
     height: 42px;
-    border-radius: 50%;
-    background: #f29bb5;
-    border: 1.5px solid #2f1e24;
-    color: #29121c;
+    border-radius: 10px;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(180, 80, 110, 0.25);
-    transition: transform 0.15s ease;
+    transition: background 0.12s ease, transform 0.1s ease;
+    line-height: 1;
+    padding: 0;
 
-    &:active {
-      transform: scale(0.92);
+    &:hover, &:active {
+      background: rgba(240, 170, 195, 0.35);
+      transform: scale(1.18);
     }
+  }
+}
 
-    ion-icon {
-      font-size: 1.25rem;
-    }
+// ── Barra de composición ───────────────────────────────────
+.chat-composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 10px 12px 14px;
+  background: rgba(255, 240, 248, 0.97);
+  border-top: 1.5px solid #e0a0bb;
+  backdrop-filter: blur(10px);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 4;
+}
+
+// Botón del toggle de emojis
+.emoji-toggle-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid #d08aa8;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 1.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.15s ease, background 0.15s ease;
+  line-height: 1;
+  padding: 0;
+
+  &:active {
+    transform: scale(0.9);
+    background: #fce4ec;
+  }
+}
+
+// Textarea del compositor — se expande con el contenido
+.composer-input {
+  flex: 1;
+  background: #ffffff;
+  border: 1.5px solid #dca0b8;
+  border-radius: 20px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  font-family: 'Quicksand', sans-serif;
+  color: #2b121c;
+  outline: none;
+  resize: none;
+  min-height: 40px;
+  max-height: 120px;
+  overflow-y: auto;
+  line-height: 1.45;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+
+  &::placeholder { color: #c09aaa; }
+
+  &:focus {
+    border-color: #cb537a;
+    box-shadow: 0 0 0 3px rgba(203, 83, 122, 0.12);
+  }
+}
+
+// Botón de enviar
+.send-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(240, 190, 210, 0.6);
+  border: 1.5px solid #c0809a;
+  color: #7a3050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.15s ease, background 0.2s ease,
+              box-shadow 0.2s ease, color 0.2s ease;
+
+  ion-icon {
+    font-size: 1.2rem;
+    transform: translateX(1px); // Pequeño ajuste óptico del icono "send"
+  }
+
+  // Estado activo cuando hay texto
+  &.ready {
+    background: linear-gradient(135deg, #f7aac3 0%, #e8749e 100%);
+    border-color: #2e1d23;
+    color: #2b0f1a;
+    box-shadow: 0 3px 10px rgba(180, 80, 110, 0.3);
+  }
+
+  &.ready:active {
+    transform: scale(0.88);
+    box-shadow: 0 1px 4px rgba(180, 80, 110, 0.2);
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.55;
   }
 }

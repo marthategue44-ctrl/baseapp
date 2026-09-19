@@ -2,6 +2,9 @@
   <ion-toolbar class="innopsi-toolbar">
     <ion-title class="innopsi-header-title">InnoPsi</ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="goToEditProfile()" title="Editar perfil" fill="clear" color="dark">
+        <ion-icon name="person-circle-outline" slot="icon-only"></ion-icon>
+      </ion-button>
       <ion-button (click)="logout()" title="Cerrar sesión" fill="clear" color="dark">
         <ion-icon name="log-out-outline" slot="icon-only"></ion-icon>
       </ion-button>
@@ -13,45 +16,79 @@
   
   <div class="home-wrapper">
 
-    <!-- Tarjeta informativa del paciente y doctor vinculado -->
+    <!-- Tarjeta de bienvenida con avatar de perfil -->
     <div class="patient-doctor-badge" *ngIf="currentUser">
-      <div class="user-greeting">
-        <ion-icon name="heart" class="heart-icon"></ion-icon>
-        <span>Hola, <strong>{{ currentUser.displayName }}</strong></span>
+      <div class="profile-avatar" (click)="goToEditProfile()">
+        <img *ngIf="currentUser.photoUrl" [src]="currentUser.photoUrl" alt="Foto de perfil">
+        <ion-icon *ngIf="!currentUser.photoUrl" name="person-circle-outline"></ion-icon>
       </div>
-      <div class="assigned-doc" *ngIf="currentUser.assignedDoctorName">
-        <ion-icon name="medkit-outline"></ion-icon>
-        <span>Tu especialista: <strong>{{ currentUser.assignedDoctorName }}</strong></span>
+      <div class="badge-info">
+        <div class="user-greeting">
+          <ion-icon name="heart" class="heart-icon"></ion-icon>
+          <span>Hola, <strong>{{ currentUser.displayName }}</strong></span>
+        </div>
+        <!-- Un solo doctor (compatibilidad) -->
+        <div class="assigned-doc" *ngIf="assignedDoctors.length === 1">
+          <ion-icon name="medkit-outline"></ion-icon>
+          <span>Tu especialista: <strong>{{ assignedDoctors[0].displayName }}</strong></span>
+        </div>
+        <!-- Múltiples doctores -->
+        <div class="assigned-doc-list" *ngIf="assignedDoctors.length > 1">
+          <ion-icon name="medkit-outline"></ion-icon>
+          <span>Tus especialistas:</span>
+          <div class="doctor-pills">
+            <span class="doctor-pill" *ngFor="let doc of assignedDoctors">
+              {{ doc.displayName }}
+            </span>
+          </div>
+        </div>
+        <!-- Sin doctor asignado -->
+        <div class="assigned-doc no-doc" *ngIf="assignedDoctors.length === 0">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <span>Sin especialista asignado aún</span>
+        </div>
       </div>
     </div>
 
-    <!-- Menú central con los botones en tonos rosa exactamente como el screenshot -->
+    <!-- Menú central -->
     <div class="menu-buttons-container">
-      
-      <!-- Botón 1: Horario Medicamentos -->
+
       <button type="button" class="innopsi-pill-button" (click)="goTo('medication-schedule')">
         Horario Medicamentos
       </button>
 
-      <!-- Botón 2: Estado emocional -->
       <button type="button" class="innopsi-pill-button" (click)="goTo('emotional-state')">
         Estado emocional
       </button>
 
-      <!-- Botón 3: Diario de seguimiento -->
       <button type="button" class="innopsi-pill-button" (click)="goTo('diary')">
         Diario de seguimiento
       </button>
 
-      <!-- Botón 4: Mensajes directos (nuevo botón solicitado) -->
-      <button type="button" class="innopsi-pill-button chat-pill-btn" (click)="goTo('chat')">
-        <ion-icon name="chatbubble-ellipses-outline" class="btn-icon"></ion-icon>
-        Mensajes directos
-      </button>
+      <!-- Botón de chat con badge de no leídos -->
+      <div class="chat-btn-wrapper">
+        <button type="button" class="innopsi-pill-button chat-pill-btn" (click)="goTo('chat')">
+          <ion-icon name="chatbubble-ellipses-outline" class="btn-icon"></ion-icon>
+          Mensajes directos
+        </button>
+        <!-- Badge de mensajes no leídos -->
+        <span class="unread-badge" *ngIf="unreadCount > 0">
+          {{ unreadCount > 99 ? '99+' : unreadCount }}
+        </span>
+        <!-- Aviso del interlocutor cuando hay mensajes -->
+        <div class="chat-preview-hint" *ngIf="unreadCount > 0">
+          <div class="hint-avatar">
+            <ion-icon name="medkit-outline"></ion-icon>
+          </div>
+          <span>
+            {{ currentUser?.assignedDoctorName || 'Tu especialista' }} —
+            {{ unreadCount }} mensaje{{ unreadCount !== 1 ? 's' : '' }} sin leer
+          </span>
+        </div>
+      </div>
 
     </div>
 
-    <!-- Sutil pie de página informativo -->
     <div class="footer-info">
       <p>Cuidado y acompañamiento para tu bienestar</p>
     </div>

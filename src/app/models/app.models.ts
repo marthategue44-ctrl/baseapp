@@ -1,22 +1,24 @@
-export type UserRole = 'paciente' | 'psicologo';
+export type UserRole = 'paciente' | 'psicologo' | 'admin';
 
 export interface UserProfile {
   uid: string;
   email: string;
   displayName: string;
   role: UserRole;
-  specialistCode?: string; // Código único si es psicólogo (ej: PSI-1234)
-  assignedDoctorId?: string; // UID del doctor asignado si es paciente
-  assignedDoctorName?: string; // Nombre del doctor asignado
+  specialistCode?: string;     // Solo psicólogos — ej: 'PSI-7749'
+  assignedDoctorId?: string;   // Primer/único doctor asignado (compatibilidad)
+  assignedDoctorName?: string; // Nombre del primer doctor (compatibilidad)
+  assignedDoctorIds?: string[];// Lista de todos los doctores asignados al paciente
+  photoUrl?: string;           // dataURL o URL de foto de perfil
   createdAt: string;
 }
 
 export interface Medication {
   id: string;
   patientId: string;
-  name: string; // ej: Medicamento A
-  dose: string; // ej: 1 Tableta
-  time: string; // ej: 8:00 AM
+  name: string;
+  dose: string;
+  time: string;
   taken: boolean;
   lastTakenDate?: string;
   instructions?: string;
@@ -27,7 +29,7 @@ export interface EmotionalStateLog {
   patientId: string;
   mood: 'Estresado' | 'Feliz' | 'Triste' | 'Calmado' | string;
   note?: string;
-  timestamp: string; // ISO string
+  timestamp: string;
   formattedDate?: string;
 }
 

@@ -1,0 +1,701 @@
+// ============================================================
+// admin-dashboard.page.scss — InnoPsi · Administración
+// Paleta: púrpura (#7b1fa2 / #ce93d8) diferenciada del rosa
+// ============================================================
+
+.admin-container {
+  max-width: 620px;
+  margin: 0 auto 40px;
+  padding: 12px 14px;
+  position: relative;
+  z-index: 2;
+}
+
+// ── Tarjeta del administrador ──────────────────────────────
+.admin-profile-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(10px);
+  border: 1.5px solid #c5a0d8;
+  border-radius: 22px;
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 16px rgba(150, 70, 190, 0.1);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+
+  .admin-avatar {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ce93d8 0%, #9c27b0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 3px 10px rgba(156, 39, 176, 0.3);
+
+    ion-icon { font-size: 1.8rem; color: #fff; }
+  }
+
+  .admin-info {
+    flex: 1;
+    min-width: 140px;
+
+    h2 {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #4a1060;
+    }
+
+    p { margin: 3px 0 0; font-size: 0.78rem; color: #7a4090; }
+  }
+
+  .stats-row { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .stat-chip {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #f3e5f5;
+    border: 1px solid #ce93d8;
+    border-radius: 14px;
+    padding: 5px 12px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #6a1b9a;
+
+    ion-icon { font-size: 0.95rem; }
+  }
+}
+
+// ── Segmentos ──────────────────────────────────────────────
+.admin-segments {
+  --background: rgba(243, 229, 245, 0.85);
+  border-radius: 20px;
+  padding: 4px;
+  margin-bottom: 16px;
+
+  ion-segment-button {
+    --color: #6a1b9a;
+    --color-checked: #ffffff;
+    --indicator-color: #ab47bc;
+    --border-radius: 16px;
+    font-weight: 600;
+    font-size: 0.82rem;
+    min-height: 36px;
+  }
+}
+
+// ── Tarjeta de sección genérica ────────────────────────────
+.section-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1.5px solid #e1bee7;
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 3px 12px rgba(150, 70, 190, 0.08);
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+
+    ion-icon { font-size: 1.2rem; color: #8e24aa; }
+
+    h3 {
+      margin: 0;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-size: 1.05rem;
+      color: #4a1060;
+    }
+  }
+}
+
+// ── Botón "Nuevo …" flotante ───────────────────────────────
+.fab-create-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px auto;         // alineado a la derecha
+  padding: 9px 20px;
+  background: linear-gradient(135deg, #ce93d8 0%, #9c27b0 100%);
+  color: #fff;
+  border: none;
+  border-radius: 22px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(156, 39, 176, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  font-family: 'Quicksand', sans-serif;
+
+  ion-icon { font-size: 1.1rem; }
+
+  &:active {
+    transform: scale(0.95);
+    box-shadow: 0 1px 4px rgba(156, 39, 176, 0.2);
+  }
+
+  &.patient-create {
+    background: linear-gradient(135deg, #f9b4c9 0%, #e8749e 100%);
+    box-shadow: 0 3px 10px rgba(180, 80, 110, 0.32);
+  }
+}
+
+// ── Tarjetas de usuario con acciones CRUD ─────────────────
+.user-crud-card {
+  .crud-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    padding-top: 10px;
+    margin-top: 10px;
+    border-top: 1px dashed #e1bee7;
+  }
+
+  .crud-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    border-radius: 14px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    font-family: 'Quicksand', sans-serif;
+    transition: transform 0.12s ease, background 0.15s ease;
+
+    ion-icon { font-size: 1rem; }
+    &:active { transform: scale(0.93); }
+
+    &.edit-btn {
+      background: #f3e5f5;
+      border-color: #ab47bc;
+      color: #6a1b9a;
+
+      &:hover { background: #e8d5f0; }
+    }
+
+    &.delete-btn {
+      background: #ffebee;
+      border-color: #ef9a9a;
+      color: #c62828;
+
+      &:hover { background: #ffcdd2; }
+    }
+  }
+}
+
+// ── Chips de doctores (tab Asignaciones) ───────────────────
+.doctor-chip-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.doctor-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border: 1.5px solid #e1bee7;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  background: #fdf5ff;
+
+  &:hover  { background: #f3e5f5; border-color: #ab47bc; }
+  &.selected {
+    background: linear-gradient(135deg, #f3e5f5 0%, #ede0f5 100%);
+    border-color: #8e24aa;
+    box-shadow: 0 2px 10px rgba(142, 36, 170, 0.18);
+  }
+
+  .chip-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: linear-gradient(135deg, #ce93d8, #9c27b0);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; flex-shrink: 0;
+
+    img { width: 100%; height: 100%; object-fit: cover; }
+    ion-icon { font-size: 1.3rem; color: #fff; }
+  }
+
+  .chip-info {
+    flex: 1;
+    .chip-name { display: block; font-weight: 700; font-size: 0.92rem; color: #3a0a50; }
+    .chip-code { font-size: 0.74rem; color: #9c27b0; font-weight: 600; letter-spacing: 0.5px; }
+  }
+
+  .chip-count {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 0.8rem; font-weight: 700; color: #6a1b9a;
+    ion-icon { font-size: 1rem; }
+  }
+}
+
+// ── Filas de asignación ────────────────────────────────────
+.sub-label {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 0.75rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  color: #2e7d32; margin-bottom: 8px;
+  ion-icon { font-size: 0.9rem; }
+}
+
+.assign-divider {
+  display: flex; align-items: center; gap: 10px;
+  margin: 14px 0 10px;
+  color: #8e24aa; font-size: 0.75rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.4px;
+
+  &::before, &::after { content: ''; flex: 1; height: 1px; background: #e1bee7; }
+}
+
+.patient-assign-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 10px; border-radius: 12px; margin-bottom: 6px;
+
+  &.assigned  { background: #f1f8f1; border: 1px solid #c8e6c9; }
+  &.unassigned{ background: #fdf5ff; border: 1px solid #e1bee7; }
+
+  .pat-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, #f9b4c9, #ee92ad);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; flex-shrink: 0;
+
+    img { width: 100%; height: 100%; object-fit: cover; }
+    ion-icon { font-size: 1.1rem; color: #3a1523; }
+  }
+
+  .pat-info {
+    flex: 1; min-width: 0;
+    .pat-name  { display: block; font-weight: 700; font-size: 0.88rem; color: #2b1a30; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .pat-email { font-size: 0.72rem; color: #8c5070; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  }
+
+  .action-btn {
+    background: none; border: none; cursor: pointer; padding: 4px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    transition: transform 0.12s ease, background 0.12s ease; flex-shrink: 0;
+    ion-icon { font-size: 1.6rem; }
+    &:active { transform: scale(0.88); }
+  }
+
+  .add-btn    ion-icon { color: #7b1fa2; }
+  .remove-btn ion-icon { color: #c62828; }
+  .add-btn:hover    { background: #f3e5f5; }
+  .remove-btn:hover { background: #ffebee; }
+}
+
+.empty-assign {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 20px; color: #9c5ab0;
+  ion-icon { font-size: 2.5rem; margin-bottom: 8px; opacity: 0.6; }
+  p { font-size: 0.85rem; margin: 0; font-style: italic; }
+}
+
+// ── Tarjetas de usuario (tabs Especialistas / Pacientes) ───
+.user-card-row {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
+}
+
+.user-card-avatar {
+  width: 46px; height: 46px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; flex-shrink: 0;
+  img { width: 100%; height: 100%; object-fit: cover; }
+  ion-icon { font-size: 1.5rem; color: #fff; }
+
+  &.doctor-av  { background: linear-gradient(135deg, #ce93d8, #9c27b0); }
+  &.patient-av { background: linear-gradient(135deg, #f9b4c9, #ee92ad); }
+}
+
+.user-card-info {
+  flex: 1;
+  h4 { margin: 0; font-size: 0.95rem; font-weight: 700; color: #2b1030; }
+  p  { margin: 2px 0 4px; font-size: 0.76rem; color: #6b3a7a; }
+  .code-tag {
+    background: #f3e5f5; color: #7b1fa2;
+    font-size: 0.7rem; font-weight: 700;
+    padding: 2px 8px; border-radius: 8px; letter-spacing: 0.5px;
+  }
+}
+
+.user-card-meta { flex-shrink: 0; }
+
+.patient-count-badge {
+  display: flex; flex-direction: column; align-items: center;
+  background: #f3e5f5; border: 1px solid #ce93d8;
+  border-radius: 12px; padding: 6px 12px; min-width: 52px;
+  span { font-size: 1.2rem; font-weight: 800; color: #6a1b9a; line-height: 1; }
+  small { font-size: 0.65rem; color: #9c5ab0; margin-top: 2px; }
+}
+
+.inline-patients {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;
+}
+
+.inline-patient-pill {
+  display: flex; align-items: center; gap: 4px;
+  background: #fce4ec; border: 1px solid #f48fb1;
+  border-radius: 14px; padding: 4px 10px;
+  font-size: 0.76rem; font-weight: 600; color: #880e4f;
+  ion-icon { font-size: 0.85rem; }
+
+  &.doctor-pill {
+    background: #f3e5f5; border-color: #ce93d8; color: #6a1b9a;
+  }
+}
+
+.assigned-doctors-section {
+  padding-top: 8px; border-top: 1px dashed #e1bee7; margin-top: 6px;
+}
+
+.sub-label-inline {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 0.74rem; font-weight: 700; color: #6a1b9a; margin-bottom: 6px;
+  ion-icon { font-size: 0.9rem; }
+}
+
+// ══════════════════════════════════════════════════════════
+// MODALES CRUD
+// ══════════════════════════════════════════════════════════
+
+// Fondo oscuro
+.crud-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(40, 10, 60, 0.45);
+  backdrop-filter: blur(3px);
+  z-index: 100;
+  animation: fade-in 0.2s ease;
+
+  &.danger-backdrop { background: rgba(80, 10, 10, 0.45); }
+}
+
+// Tarjeta del modal
+.crud-modal {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(94vw, 480px);
+  max-height: 88vh;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 22px;
+  box-shadow: 0 12px 40px rgba(100, 30, 140, 0.28);
+  z-index: 101;
+  animation: modal-pop 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
+  padding: 0 0 4px;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-thumb { background: #ce93d8; border-radius: 4px; }
+}
+
+@keyframes modal-pop {
+  from { opacity: 0; transform: translate(-50%, -46%) scale(0.92); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+// Encabezado del modal
+.crud-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 14px;
+  border-bottom: 1.5px solid #f3e5f5;
+
+  ion-icon { font-size: 1.4rem; color: #8e24aa; flex-shrink: 0; }
+
+  h3 {
+    flex: 1;
+    margin: 0 10px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: #4a1060;
+  }
+
+  .modal-close-btn {
+    background: none; border: none; cursor: pointer; padding: 4px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s ease;
+    ion-icon { font-size: 1.5rem; color: #8e24aa; }
+    &:hover { background: #f3e5f5; }
+  }
+
+  &.danger {
+    border-bottom-color: #ffcdd2;
+    h3 { color: #b71c1c; }
+    ion-icon { color: #e53935; }
+  }
+}
+
+// Banner de error dentro del modal
+.form-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 20px 0;
+  padding: 10px 14px;
+  background: #ffebee;
+  border: 1px solid #ef9a9a;
+  border-radius: 12px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: #c62828;
+
+  ion-icon { font-size: 1.1rem; flex-shrink: 0; }
+}
+
+// Cuerpo del formulario
+.crud-form {
+  padding: 16px 20px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #6a1b9a;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+
+  ion-icon { font-size: 0.9rem; }
+
+  .label-hint {
+    font-weight: 400;
+    font-size: 0.7rem;
+    color: #9c6ab0;
+    text-transform: none;
+    letter-spacing: 0;
+    margin-left: 2px;
+  }
+}
+
+.form-input {
+  width: 100%;
+  background: #fdf5ff;
+  border: 1.5px solid #ddb8ec;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  font-family: 'Quicksand', sans-serif;
+  color: #2b1030;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.18s, box-shadow 0.18s;
+
+  &::placeholder { color: #c0a0d0; }
+
+  &:focus {
+    border-color: #9c27b0;
+    box-shadow: 0 0 0 3px rgba(156, 39, 176, 0.12);
+    background: #fff;
+  }
+}
+
+// Selector de rol (crear)
+.role-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.role-toggle-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 9px 12px;
+  border: 1.5px solid #ddb8ec;
+  border-radius: 14px;
+  background: #fdf5ff;
+  color: #6a1b9a;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Quicksand', sans-serif;
+  transition: all 0.15s ease;
+
+  ion-icon { font-size: 1.1rem; }
+
+  &.active {
+    background: linear-gradient(135deg, #ce93d8 0%, #9c27b0 100%);
+    color: #fff;
+    border-color: #7b1fa2;
+    box-shadow: 0 2px 8px rgba(156, 39, 176, 0.28);
+  }
+}
+
+// Lista de checkboxes de doctores
+.doctor-checkbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: #fdf5ff;
+  border: 1.5px solid #ddb8ec;
+  border-radius: 14px;
+  padding: 10px 14px;
+  max-height: 160px;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar { width: 3px; }
+  &::-webkit-scrollbar-thumb { background: #ce93d8; border-radius: 3px; }
+}
+
+.doc-check-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+  cursor: pointer;
+
+  input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #9c27b0;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .doc-check-name {
+    flex: 1;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: #2b1030;
+  }
+
+  .doc-check-code {
+    font-size: 0.72rem;
+    color: #9c27b0;
+    font-weight: 700;
+    background: #f3e5f5;
+    padding: 2px 6px;
+    border-radius: 6px;
+  }
+}
+
+.no-doctors-hint {
+  font-size: 0.8rem;
+  color: #9c6ab0;
+  font-style: italic;
+  margin: 4px 0 0;
+  text-align: center;
+}
+
+// Acciones del modal
+.crud-modal-actions {
+  display: flex;
+  gap: 10px;
+  padding: 16px 20px 20px;
+  justify-content: flex-end;
+}
+
+.modal-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 22px;
+  border-radius: 18px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  font-family: 'Quicksand', sans-serif;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+
+  ion-icon { font-size: 1.05rem; }
+  &:active { transform: scale(0.94); }
+
+  &.cancel {
+    background: #f3e5f5;
+    border-color: #ddb8ec;
+    color: #6a1b9a;
+    &:hover { background: #ead5f5; }
+  }
+
+  &.save {
+    background: linear-gradient(135deg, #ce93d8 0%, #9c27b0 100%);
+    color: #fff;
+    border-color: #7b1fa2;
+    box-shadow: 0 3px 10px rgba(156, 39, 176, 0.3);
+    &:hover { box-shadow: 0 4px 14px rgba(156, 39, 176, 0.45); }
+    &:disabled {
+      opacity: 0.5;
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
+  }
+
+  &.delete {
+    background: linear-gradient(135deg, #ef9a9a 0%, #e53935 100%);
+    color: #fff;
+    border-color: #b71c1c;
+    box-shadow: 0 3px 10px rgba(229, 57, 53, 0.3);
+    &:hover { box-shadow: 0 4px 14px rgba(229, 57, 53, 0.45); }
+  }
+}
+
+// Modal de eliminación
+.delete-modal {
+  width: min(88vw, 380px);
+}
+
+.delete-warning-text {
+  padding: 14px 20px 4px;
+  font-size: 0.9rem;
+  color: #3a1523;
+  line-height: 1.55;
+  margin: 0;
+
+  strong { color: #b71c1c; }
+}
+
+// ── Estados vacíos ─────────────────────────────────────────
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+
+  .empty-icon { font-size: 3rem; margin-bottom: 12px; }
+
+  p { color: #8e5a9a; font-size: 0.9rem; font-style: italic; margin: 0; }
+}
+
+.empty-placeholder {
+  text-align: center;
+  padding: 12px;
+  color: #9c5ab0;
+  font-style: italic;
+  font-size: 0.82rem;
+
+  &.small { padding: 6px 0; font-size: 0.76rem; }
+}
