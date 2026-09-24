@@ -4,8 +4,11 @@
 
 export const environment = {
   production: false,
+  // Coloca aquí tu API Key de Google Gemini (Google AI Studio)
+  geminiApiKey: 'TU_API_KEY_AQUI',
+  geminiapiKey: 'TU_API_KEY_AQUI',
   firebase: {
-    apiKey: "", // Ingresa tu apiKey de Firebase para conectar tu proyecto en vivo
+    apiKey: "",
     authDomain: "innopsi-app.firebaseapp.com",
     projectId: "innopsi-app",
     storageBucket: "innopsi-app.appspot.com",

@@ -1,0 +1,130 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="innopsi-top-banner">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" text="" color="dark"></ion-back-button>
+    </ion-buttons>
+    <ion-title class="innopsi-serif-title">Psyche 🌸</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="confirmClearHistory()" title="Reiniciar conversación" fill="clear" color="dark">
+        <ion-icon name="trash-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<div class="chat-screen">
+
+  <!-- Banner de presentación de Psyche -->
+  <div class="chat-partner-banner">
+    <div class="avatar-circle">
+      <ion-icon name="sparkles"></ion-icon>
+    </div>
+    <div class="partner-info">
+      <h3>Psyche 🌸</h3>
+      <p>Asistente de apoyo y bienestar emocional</p>
+    </div>
+    <div class="status-badge">
+      <span class="status-dot"></span>
+      <span class="status-text">En línea</span>
+    </div>
+  </div>
+
+  <!-- Barra de sugerencias rápidas -->
+  <div class="quick-prompts-container">
+    <button
+      type="button"
+      class="prompt-chip"
+      *ngFor="let prompt of quickPrompts"
+      (click)="selectPrompt(prompt)">
+      {{ prompt }}
+    </button>
+  </div>
+
+  <!-- Zona de mensajes con scroll -->
+  <div class="messages-scroll-area" #scrollArea>
+    <div class="messages-list">
+
+      <!-- Aviso de confidencialidad y seguridad -->
+      <div class="safety-notice-card">
+        <ion-icon name="shield-checkmark-outline"></ion-icon>
+        <span>Espacio seguro de escucha. Psyche no reemplaza a tu psicólogo clínico ni atiende urgencias médicas.</span>
+      </div>
+
+      <!-- Burbujas de conversación -->
+      <div
+        class="message-row"
+        *ngFor="let msg of messages"
+        [ngClass]="msg.role === 'user' ? 'row-outgoing' : 'row-incoming'">
+
+        <!-- Avatar para mensajes de Psyche -->
+        <div class="mini-avatar" *ngIf="msg.role !== 'user'">
+          <ion-icon name="sparkles"></ion-icon>
+        </div>
+
+        <div
+          class="message-bubble"
+          [ngClass]="msg.role === 'user' ? 'outgoing' : 'incoming'">
+          <span class="sender-name">{{ msg.role === 'user' ? 'Tú' : 'Psyche 🌸' }}</span>
+          <p class="msg-text">{{ msg.content }}</p>
+          <span class="msg-time" *ngIf="msg.timestamp">{{ formatTime(msg.timestamp) }}</span>
+        </div>
+      </div>
+
+      <!-- Indicador de "escribiendo..." -->
+      <div class="message-row row-incoming" *ngIf="isLoading">
+        <div class="mini-avatar">
+          <ion-icon name="sparkles"></ion-icon>
+        </div>
+        <div class="message-bubble incoming typing-bubble">
+          <span class="sender-name">Psyche está pensando...</span>
+          <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Panel de emojis -->
+  <div class="emoji-panel" [class.open]="showEmojiPanel">
+    <div class="emoji-grid">
+      <button
+        class="emoji-btn"
+        *ngFor="let emoji of emojiList"
+        (click)="insertEmoji(emoji)"
+        type="button">
+        {{ emoji }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Barra de composición inferior -->
+  <div class="chat-composer">
+    <button class="emoji-toggle-btn" type="button" (click)="toggleEmojiPanel()" title="Emojis">
+      {{ showEmojiPanel ? '⌨️' : '🌸' }}
+    </button>
+
+    <textarea
+      class="composer-input"
+      [(ngModel)]="newMessageText"
+      (keydown.enter)="onEnterKey($event)"
+      (focus)="showEmojiPanel = false"
+      placeholder="Escribe tu mensaje a Psyche…"
+      rows="1"
+      #messageInput>
+    </textarea>
+
+    <button
+      class="send-btn"
+      type="button"
+      [disabled]="!newMessageText.trim() || isLoading"
+      [class.ready]="newMessageText.trim() && !isLoading"
+      (click)="sendMessage()">
+      <ion-icon name="send"></ion-icon>
+    </button>
+  </div>
+
+</div>

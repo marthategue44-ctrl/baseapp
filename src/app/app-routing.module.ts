@@ -34,6 +34,11 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'psyche-chat',
+    loadChildren: () => import('./pages/psyche-chat/psyche-chat.module').then(m => m.PsycheChatPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'edit-profile',
     loadChildren: () => import('./pages/edit-profile/edit-profile.module').then(m => m.EditProfilePageModule),
     canActivate: [AuthGuard]

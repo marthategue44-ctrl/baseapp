@@ -1,5 +1,7 @@
 export const environment = {
   production: true,
+  geminiApiKey: '',
+  geminiapiKey: '',
   firebase: {
     apiKey: "",
     authDomain: "innopsi-app.firebaseapp.com",

@@ -1,0 +1,398 @@
+.innopsi-top-banner {
+  --background: rgba(254, 230, 240, 0.95);
+  --color: #351722;
+  border-bottom: 1.5px solid #4a2835;
+  backdrop-filter: blur(8px);
+
+  .innopsi-serif-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+    color: #2b141d;
+  }
+}
+
+.chat-screen {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 56px);
+  background: radial-gradient(circle at 50% 30%, #fff2f6 0%, #fedce7 45%, #f9c2d5 75%, #f6a7c3 100%);
+  background-attachment: fixed;
+  position: relative;
+  overflow: hidden;
+  font-family: 'Quicksand', sans-serif;
+}
+
+/* Banner de Psyche */
+.chat-partner-banner {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(10px);
+  border-bottom: 1.5px solid #e8a8c0;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 10px rgba(180, 80, 110, 0.08);
+  z-index: 5;
+
+  .avatar-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fce4ec 0%, #f48fb1 100%);
+    border: 2px solid #d0607e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #880e4f;
+    font-size: 1.4rem;
+    box-shadow: 0 2px 6px rgba(200, 80, 120, 0.2);
+  }
+
+  .partner-info {
+    flex: 1;
+
+    h3 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #3b1725;
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    p {
+      margin: 2px 0 0 0;
+      font-size: 0.78rem;
+      color: #723b4e;
+    }
+  }
+
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #e8f5e9;
+    border: 1px solid #c8e6c9;
+    padding: 3px 8px;
+    border-radius: 12px;
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #4caf50;
+      box-shadow: 0 0 6px rgba(76, 175, 80, 0.6);
+      animation: pulse 2s infinite;
+    }
+
+    .status-text {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #2e7d32;
+    }
+  }
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+/* Sugerencias rápidas */
+.quick-prompts-container {
+  display: flex;
+  gap: 8px;
+  padding: 10px 16px;
+  overflow-x: auto;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid rgba(232, 168, 192, 0.4);
+  scrollbar-width: none;
+  z-index: 4;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .prompt-chip {
+    background: #ffffff;
+    border: 1px solid #f48fb1;
+    color: #4a1e2c;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(180, 80, 110, 0.08);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+
+    &:hover, &:active {
+      background: #fce4ec;
+      transform: translateY(-1px);
+    }
+  }
+}
+
+/* Mensajes con scroll */
+.messages-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  position: relative;
+  z-index: 2;
+
+  .messages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+/* Tarjeta informativa de seguridad */
+.safety-notice-card {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px dashed #d87093;
+  border-radius: 14px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  font-size: 0.76rem;
+  color: #5c2738;
+  line-height: 1.3;
+
+  ion-icon {
+    font-size: 1.2rem;
+    color: #d87093;
+    flex-shrink: 0;
+  }
+}
+
+/* Filas de mensajes */
+.message-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  width: 100%;
+
+  &.row-incoming {
+    justify-content: flex-start;
+  }
+
+  &.row-outgoing {
+    justify-content: flex-end;
+  }
+
+  .mini-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #fce4ec, #f48fb1);
+    border: 1.5px solid #d0607e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #880e4f;
+    font-size: 0.88rem;
+    flex-shrink: 0;
+    margin-bottom: 2px;
+  }
+}
+
+.message-bubble {
+  max-width: 82%;
+  border-radius: 18px;
+  padding: 10px 14px;
+  position: relative;
+  box-shadow: 0 3px 8px rgba(160, 60, 90, 0.08);
+
+  .sender-name {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+
+  .msg-text {
+    margin: 0;
+    font-size: 0.92rem;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .msg-time {
+    display: block;
+    font-size: 0.68rem;
+    text-align: right;
+    margin-top: 4px;
+    opacity: 0.75;
+  }
+
+  &.incoming {
+    background: #ffffff;
+    color: #2b141d;
+    border: 1px solid #f2cad9;
+    border-bottom-left-radius: 4px;
+
+    .sender-name {
+      color: #ad1457;
+    }
+  }
+
+  &.outgoing {
+    background: linear-gradient(135deg, #f8bbd0 0%, #f48fb1 100%);
+    color: #2b141d;
+    border: 1px solid #e57373;
+    border-bottom-right-radius: 4px;
+
+    .sender-name {
+      color: #5c182a;
+    }
+  }
+}
+
+/* Animación de puntos cuando Psyche escribe */
+.typing-bubble {
+  padding: 8px 14px;
+
+  .typing-dots {
+    display: flex;
+    gap: 4px;
+    padding: 6px 2px 2px 2px;
+
+    span {
+      width: 7px;
+      height: 7px;
+      background: #d87093;
+      border-radius: 50%;
+      display: inline-block;
+      animation: bounce 1.4s infinite ease-in-out both;
+
+      &:nth-child(1) { animation-delay: -0.32s; }
+      &:nth-child(2) { animation-delay: -0.16s; }
+    }
+  }
+}
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+/* Panel de emojis */
+.emoji-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease-out;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid #e8a8c0;
+  z-index: 6;
+
+  &.open {
+    max-height: 120px;
+    padding: 10px;
+    overflow-y: auto;
+  }
+
+  .emoji-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+
+    .emoji-btn {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 8px;
+      transition: background 0.15s;
+
+      &:hover {
+        background: #fce4ec;
+      }
+    }
+  }
+}
+
+/* Barra inferior de composición */
+.chat-composer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-top: 1.5px solid #e0a0bb;
+  z-index: 6;
+
+  .emoji-toggle-btn {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .composer-input {
+    flex: 1;
+    border: 1.5px solid #dca0b8;
+    border-radius: 20px;
+    padding: 8px 14px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.92rem;
+    color: #2b141d;
+    background: #fff;
+    resize: none;
+    outline: none;
+    max-height: 80px;
+
+    &:focus {
+      border-color: #d81b60;
+      box-shadow: 0 0 0 2px rgba(216, 27, 96, 0.15);
+    }
+  }
+
+  .send-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: none;
+    background: #f8bbd0;
+    color: #880e4f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0.5;
+
+    &.ready {
+      background: linear-gradient(135deg, #f06292 0%, #ec407a 100%);
+      color: #ffffff;
+      opacity: 1;
+      box-shadow: 0 3px 8px rgba(236, 64, 122, 0.4);
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+}
